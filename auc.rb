@@ -35,9 +35,13 @@ class Item
     return true
   end
 
+  def price_lower_than(price)
+    return (self.current_price < price)
+  end  
 
-
-  
+  def price_higherer_than(price)
+    return (self.current_price > price)
+  end  
 
 end
 

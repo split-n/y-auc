@@ -42,6 +42,7 @@ class Item
 end
 
 class CategoryItems
+  include Enumerable
 
   def self.set_api_key(api_key)
     @@api_key = api_key
@@ -65,11 +66,11 @@ class CategoryItems
   end
 
   def each
-    @items_readed_pos = 0
+    items_readed_pos = 0
     @items.each do |item|
       yield(item)
+      items_readed_pos += 1
     end
-    @items_readed_pos = @items.length-1
   end
 
   private

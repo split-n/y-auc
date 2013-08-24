@@ -5,7 +5,6 @@ require 'pp'
 require 'pry'
 require 'date'
 
-API_KEY = ''
 
 class Item
 
@@ -44,24 +43,37 @@ end
 
 class CategoryItems
 
+  def self.set_api_key(api_key)
+    @@api_key = api_key
+  end
+
   def initialize(category_id)
+    raise unless @@api_key
     @category_id = category_id
     @items = []
   end
 
   def create_request_url()
     minimum_url = "http://auctions.yahooapis.jp/AuctionWebService/V2/categoryLeaf?" + 
-    "appid=#{API_KEY}" + 
+    "appid=#{@@api_key}" + 
     "&category=#{@category_id.to_s}"
     minimum_url
   end
 
-  def get
+  def get_first_page
     get_item_list(create_request_url)
   end
 
+  def each
+    @items_readed_pos = 0
+    @items.each do |item|
+      yield(item)
+    end
+    @items_readed_pos = @items.length-1
+  end
+
+  private
   def get_item_list(url)
-    
     xmlfile = open(url)
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
@@ -89,13 +101,12 @@ class CategoryItems
         PP.pp(item,STDERR)
       end
     end
-    return @items
   end
 
-  attr_reader :category_id
+  attr_reader :category_id, :items
 
 end
 
-cat = CategoryItems.new(2084193586)
-pp cat.get
+
+
 

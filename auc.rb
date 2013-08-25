@@ -48,6 +48,8 @@ end
 class CategoryItems
   include Enumerable
 
+  attr_reader :category_id, :items
+
   def self.set_api_key(api_key)
     @@api_key = api_key
   end
@@ -58,15 +60,95 @@ class CategoryItems
     @items = []
   end
 
-  def create_request_url()
-    minimum_url = "http://auctions.yahooapis.jp/AuctionWebService/V2/categoryLeaf?" + 
+  def create_request_url(args = {})
+    url = "http://auctions.yahooapis.jp/AuctionWebService/V2/categoryLeaf?" + 
     "appid=#{@@api_key}" + 
     "&category=#{@category_id.to_s}"
-    minimum_url
+
+    page = args[:page] if args[:page].is_a?(Integer)
+
+    sort = case args[:sort_by]
+      when :end_time
+        "end"
+      when :has_image
+        "img"
+      when :bids
+        "bids"
+      when :current_price
+        "cbids"
+      when :buy_price
+        "bidorbuy"
+      when :affiliate
+        "affilate"
+      else 
+        nil
+      end
+
+    order = case args[:order]
+      when :desc
+        "d"
+      when :asc 
+        "a"
+      else 
+        nil
+      end
+
+    store = case args[:store]
+      when :all
+        0
+      when :store
+        1
+      when :normal
+        2
+      else 
+        nil
+      end
+
+    item_status = case args[:item_status]
+      when :all
+        0
+      when :new
+        1
+      when :used
+        2
+      else 
+        nil
+      end
+
+    aucmin_bidorbuy_price = args[:min_buy_price] if args[:min_buy_price].is_a?(Integer)
+    aucmax_bidorbuy_price = args[:max_buy_price] if args[:max_buy_price].is_a?(Integer)
+
+    aucmaxprice = args[:max_price] if args[:max_price].is_a?(Integer)
+    aucminprice = args[:min_price] if args[:min_price].is_a?(Integer)
+
+    buynow = case args[:buynow]
+      when true
+        1
+      when false
+        2
+      else 
+        nil
+      end
+
+    %w(buynow aucmaxprice aucminprice page sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price).each do |a|
+      url += "&#{a}=#{eval(a)}" if eval(a)
+    end
+
+
+
+
+    return url
   end
 
   def get_first_page
     get_item_list(create_request_url)
+  end
+
+  def get(args = {})
+    url = create_request_url(args) 
+    p url
+    get_item_list(url)
+    @items
   end
 
   def each
@@ -108,8 +190,7 @@ class CategoryItems
     end
   end
 
-  attr_reader :category_id, :items
-
+  
 end
 
 

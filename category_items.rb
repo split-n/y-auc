@@ -26,7 +26,7 @@ class CategoryItems
 
   def each
     items_readed_pos = -1
-    while(get_next_page)
+    while get_next_page_in_necessary(items_readed_pos)
       (items_readed_pos+1).upto(@items.length-1) do |i|
         yield @items[i]
       end
@@ -116,6 +116,15 @@ class CategoryItems
 
 
     return url
+  end
+
+  def get_next_page_in_necessary(current_read_items_pos)
+      if (@items.length-1)==current_read_items_pos
+        return get_next_page
+      else
+        return true
+      end
+
   end
 
 

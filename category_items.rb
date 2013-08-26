@@ -27,7 +27,7 @@ class CategoryItems
     "appid=#{@@api_key}" + 
     "&category=#{@category_id.to_s}"
 
-    page = args[:page] if args[:page].is_a?(Integer)
+    # page = args[:page] if args[:page].is_a?(Integer)
 
     sort = case args[:sort_by]
       when :end_time

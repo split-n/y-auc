@@ -10,18 +10,17 @@ require 'date'
 class CategoryItems
   include Enumerable
 
-  attr_reader :category_id, :items
-  attr_accessor :options
+  attr_reader :category_id, :items, :options
 
   def self.set_api_key(api_key)
     @@api_key = api_key
   end
 
-  def initialize(category_id)
+  def initialize(category_id,opt)
     raise unless @@api_key
     @category_id = category_id
     @items = []
-    @options = {}
+    @options = opt
     @red_page = 0
   end
 

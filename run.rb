@@ -1,8 +1,36 @@
 # encoding:utf-8
-require './auc.rb'
+require './category_items.rb'
+require './item.rb'
 
-CategoryItems.set_api_key('')
+class YAuction
 
-cat = CategoryItems.new(2084193586)
-cat.get_first_page
-pp cat.items
+  def self.testrun(apikey)
+    CategoryItems.set_api_key(apikey)
+
+    cat = CategoryItems.new(2084193586)
+    pp cat.get(min_price: 10000, sort_by: :end_time, order: :desc,buynow: false)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  end
+
+
+end

@@ -11,6 +11,7 @@ class CategoryItems
   include Enumerable
 
   attr_reader :category_id, :items
+  attr_accessor :options
 
   def self.set_api_key(api_key)
     @@api_key = api_key
@@ -20,14 +21,30 @@ class CategoryItems
     raise unless @@api_key
     @category_id = category_id
     @items = []
+    @options = {}
+    @red_page = 0
   end
 
-  def create_request_url(args = {})
+  def each
+    items_readed_pos = -1
+    while(get_next_page)
+      (items_readed_pos+1).upto(@items.length-1) do |i|
+        yield @items[i]
+      end
+      items_readed_pos = @items.length-1
+    end
+  end
+
+  private
+
+  def create_request_url(page)
     url = "http://auctions.yahooapis.jp/AuctionWebService/V2/categoryLeaf?" + 
     "appid=#{@@api_key}" + 
     "&category=#{@category_id.to_s}"
 
     # page = args[:page] if args[:page].is_a?(Integer)
+    # pageはオプションからの指定が有効、外部からは触らない
+    args = @options
 
     sort = case args[:sort_by]
       when :end_time
@@ -102,26 +119,23 @@ class CategoryItems
     return url
   end
 
-  def get_first_page
-    get_item_list(create_request_url)
-  end
 
-  def get(args = {})
-    url = create_request_url(args) 
-    p url
+  def get_next_page
+    past_items = @items.length
+    url = create_request_url(@red_page+1) 
     get_item_list(url)
-    @items
+    @red_page += 1
+    current_items = @items.length
+=begin
+    puts  "red:#{@red_page}"
+    puts  "past:#{past_items}"
+    puts  "curre:#{current_items}"
+=end
+    return !(past_items==current_items) # getしても個数が変わらなかった時にfalseを返す
+      
+
   end
 
-  def each
-    items_readed_pos = 0
-    @items.each do |item|
-      yield(item)
-      items_readed_pos += 1
-    end
-  end
-
-  private
   def get_item_list(url)
     xmlfile = open(url)
     doc = Nokogiri::XML(xmlfile)

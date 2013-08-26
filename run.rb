@@ -8,11 +8,16 @@ class YAuction
     CategoryItems.set_api_key(apikey)
 
     cat = CategoryItems.new(2084193586)
-    pp cat.get(min_price: 10000, sort_by: :end_time, order: :desc,buynow: false)
+    cat.options = {min_price: 100, sort_by: :end_time, order: :desc}
+    cat.take(75).each do |val|
+      p val.title
+    end
 
+    puts "================="
 
-
-
+    cat.take(75).each do |val|
+      p val.title
+    end
 
 
 

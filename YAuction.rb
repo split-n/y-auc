@@ -2,6 +2,10 @@
 require './category_items.rb'
 require './item.rb'
 
+def get_key_from_file(filename)
+  s = File.read(filename,encoding: Encoding::UTF_8)
+  s.chomp
+end
 
 def testrun(apikey)
   CategoryItems.set_api_key(apikey)
@@ -17,11 +21,6 @@ def testrun(apikey)
     p i
   end
 
-end
-
-def get_key_from_file(filename)
-  s = File.read(filename,encoding: Encoding::UTF_8)
-  s.chomp
 end
 
 key = get_key_from_file "key.txt"

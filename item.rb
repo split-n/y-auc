@@ -1,9 +1,11 @@
 # encoding:utf-8
 require 'date'
+require './yahoo_api.rb'
 
 class Item
+  include YahooAPI
 
-  attr_accessor :auction_id, :title, :seller_id, :item_url, :image_url, :end_time, :current_price, :buy_price, :bids 
+  attr_accessor :auction_id, :title, :seller_id, :item_url, :image_url, :end_time, :current_price, :buy_price, :bids, :get_from_category 
 
   def initialize
       
@@ -37,5 +39,14 @@ class Item
   def price_higherer_than(price)
     return (self.current_price > price)
   end  
+
+  def update
+
+  end
+
+  private
+  def get_my_info
+    
+  end
 
 end

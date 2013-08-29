@@ -1,6 +1,10 @@
 # encoding:utf-8
 require './category_items.rb'
 require './item.rb'
+require './yahoo_api.rb'
+
+
+TP13 = 2084307189
 
 def get_key_from_file(filename)
   s = File.read(filename,encoding: Encoding::UTF_8)
@@ -8,20 +12,13 @@ def get_key_from_file(filename)
 end
 
 def testrun(apikey)
-  CategoryItems.set_api_key(apikey)
+  YahooAPI.set_api_key(apikey)
 
-  cat = CategoryItems.new(2084193586,{min_price: 100, sort_by: :end_time, order: :desc})
-  cat.take(75).each_with_index do |val,i|
-    p i
+  cat = CategoryItems.new(TP13,{min_price: 100, sort_by: :end_time, order: :desc})
+
+  cat.lazy.take(60).each do |a|
+    p a.title
   end
-
-  puts "================="
-
-  cat.take(70).each_with_index do |val,i|
-    p i
-  end
-
 end
-
-key = get_key_from_file "key.txt"
+ key = get_key_from_file "key.txt"
 testrun(key)

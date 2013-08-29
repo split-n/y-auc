@@ -4,33 +4,35 @@ require 'nokogiri'
 require 'pp'
 require 'pry'
 require 'date'
+require './yahoo_api.rb'
 
 
 
 class CategoryItems
   include Enumerable
+  include YahooAPI
 
   attr_reader :category_id, :items, :options
-
-  def self.set_api_key(api_key)
-    @@api_key = api_key
-  end
 
   def initialize(category_id,opt)
     raise unless @@api_key
     @category_id = category_id
-    @items = []
+    @items = {}
     @options = opt
     @red_page = 0
   end
 
   def each
-    items_readed_pos = -1
-    while get_next_page_in_necessary(items_readed_pos)
-      (items_readed_pos+1).upto(@items.length-1) do |i|
-        yield @items[i]
+    @items.each do |key,val|
+      yield val
+    end
+    while true
+      items = get_next_page
+      break if items=={}
+      items.each do |key,val|
+        yield val unless @items[key]
+        @items[key] = val
       end
-      items_readed_pos = @items.length-1
     end
   end
 
@@ -118,33 +120,18 @@ class CategoryItems
     return url
   end
 
-  def get_next_page_in_necessary(current_read_items_pos)
-      if (@items.length-1)==current_read_items_pos
-        return get_next_page
-      else
-        return true
-      end
-
-  end
-
-
   def get_next_page
-    past_items = @items.length
     url = create_request_url(@red_page+1) 
-    get_item_list(url)
+    item_list = get_item_list(url)
     @red_page += 1
-    current_items = @items.length
 =begin
     puts  "red:#{@red_page}"
-    puts  "past:#{past_items}"
-    puts  "curre:#{current_items}"
 =end
-    return !(past_items==current_items) # getしても個数が変わらなかった時にfalseを返す
-      
-
+    return item_list
   end
 
   def get_item_list(url)
+    items_on_list = {}
     xmlfile = open(url)
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
@@ -164,16 +151,18 @@ class CategoryItems
       item.buy_price = buyprice
       item.bids = elem.at('Bids').inner_text.to_i
 
+      item.get_from_category = @category_id
+
       if item.valid?
-        @items << item
+        items_on_list[item.auction_id] = item
       else
         # for debug
         puts "::: validation error :::"
         PP.pp(item,STDERR)
       end
     end
+    return items_on_list
   end
-
   
 end
 

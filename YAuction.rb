@@ -2,7 +2,7 @@
 require './category_items.rb'
 require './item.rb'
 
-
+TP13 = 2084307189
 
 def get_key_from_file(filename)
   s = File.read(filename,encoding: Encoding::UTF_8)
@@ -12,9 +12,9 @@ end
 def testrun(apikey)
   CategoryItems.set_api_key(apikey)
 
-  cat = CategoryItems.new(2084039759,{min_price: 100, sort_by: :end_time, order: :desc})
+  cat = CategoryItems.new(TP13,{min_price: 100, sort_by: :end_time, order: :desc})
 
-  cat.each do |a|
+  cat.lazy.take(60).each do |a|
     p a.title
   end
 end

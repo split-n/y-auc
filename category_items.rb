@@ -11,7 +11,7 @@ class CategoryItems
   include Enumerable
 
   attr_reader :category_id, :items, :options
-
+DEBUG = true
   def self.set_api_key(api_key)
     @@api_key = api_key
   end
@@ -25,9 +25,16 @@ class CategoryItems
   end
 
   def each
-    get_next_page
     @items.each do |key,val|
       yield val
+    end
+    while true
+      items = get_next_page
+      break if items=={}
+      items.each do |key,val|
+        yield val
+        @items[key] = val
+      end
     end
   end
 
@@ -115,29 +122,18 @@ class CategoryItems
     return url
   end
 
-  def get_next_page_in_necessary(current_read_items_pos)
-  
-  end
-
-
-
   def get_next_page
-    past_items = @items.length
     url = create_request_url(@red_page+1) 
-    get_item_list(url)
+    item_list = get_item_list(url)
     @red_page += 1
-    current_items = @items.length
 #=begin
     puts  "red:#{@red_page}"
-    puts  "past:#{past_items}"
-    puts  "curre:#{current_items}"
 #=end
-    return !(past_items==current_items) # getしても個数が変わらなかった時にfalseを返す
-      
-
+    return item_list
   end
 
   def get_item_list(url)
+    items_on_list = {}
     xmlfile = open(url)
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
@@ -158,13 +154,14 @@ class CategoryItems
       item.bids = elem.at('Bids').inner_text.to_i
 
       if item.valid?
-        @items[item.auction_id] = item
+        items_on_list[item.auction_id] = item
       else
         # for debug
         puts "::: validation error :::"
         PP.pp(item,STDERR)
       end
     end
+    return items_on_list
   end
   
 end

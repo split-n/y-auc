@@ -3,7 +3,7 @@ require 'date'
 
 class Item
 
-  attr_accessor :auction_id, :title, :seller_id, :item_url, :image_url, :end_time, :current_price, :buy_price, :bids 
+  attr_accessor :auction_id, :title, :seller_id, :item_url, :image_url, :end_time, :current_price, :buy_price, :bids, :get_from_category 
 
   def initialize
       

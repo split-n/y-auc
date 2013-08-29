@@ -13,7 +13,6 @@ class CategoryItems
   include YahooAPI
 
   attr_reader :category_id, :items, :options
-DEBUG = true
 
   def initialize(category_id,opt)
     raise unless @@api_key
@@ -31,7 +30,7 @@ DEBUG = true
       items = get_next_page
       break if items=={}
       items.each do |key,val|
-        yield val
+        yield val unless @items[key]
         @items[key] = val
       end
     end
@@ -125,9 +124,9 @@ DEBUG = true
     url = create_request_url(@red_page+1) 
     item_list = get_item_list(url)
     @red_page += 1
-#=begin
+=begin
     puts  "red:#{@red_page}"
-#=end
+=end
     return item_list
   end
 

@@ -4,17 +4,16 @@ require 'nokogiri'
 require 'pp'
 require 'pry'
 require 'date'
+require './yahoo_api.rb'
 
 
 
 class CategoryItems
   include Enumerable
+  include YahooAPI
 
   attr_reader :category_id, :items, :options
 DEBUG = true
-  def self.set_api_key(api_key)
-    @@api_key = api_key
-  end
 
   def initialize(category_id,opt)
     raise unless @@api_key

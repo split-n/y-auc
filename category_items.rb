@@ -19,18 +19,15 @@ class CategoryItems
   def initialize(category_id,opt)
     raise unless @@api_key
     @category_id = category_id
-    @items = []
+    @items = {}
     @options = opt
     @red_page = 0
   end
 
   def each
-    items_readed_pos = -1
-    while get_next_page_in_necessary(items_readed_pos)
-      (items_readed_pos+1).upto(@items.length-1) do |i|
-        yield @items[i]
-      end
-      items_readed_pos = @items.length-1
+    get_next_page
+    @items.each do |key,val|
+      yield val
     end
   end
 
@@ -119,13 +116,9 @@ class CategoryItems
   end
 
   def get_next_page_in_necessary(current_read_items_pos)
-      if (@items.length-1)==current_read_items_pos
-        return get_next_page
-      else
-        return true
-      end
-
+  
   end
+
 
 
   def get_next_page
@@ -134,11 +127,11 @@ class CategoryItems
     get_item_list(url)
     @red_page += 1
     current_items = @items.length
-=begin
+#=begin
     puts  "red:#{@red_page}"
     puts  "past:#{past_items}"
     puts  "curre:#{current_items}"
-=end
+#=end
     return !(past_items==current_items) # getしても個数が変わらなかった時にfalseを返す
       
 
@@ -165,7 +158,7 @@ class CategoryItems
       item.bids = elem.at('Bids').inner_text.to_i
 
       if item.valid?
-        @items << item
+        @items[item.auction_id] = item
       else
         # for debug
         puts "::: validation error :::"
@@ -173,7 +166,6 @@ class CategoryItems
       end
     end
   end
-
   
 end
 

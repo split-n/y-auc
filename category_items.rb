@@ -130,6 +130,20 @@ class CategoryItems
     return item_list
   end
 
+  def get_all_page_and_reqlace
+    @red_page = 0
+    @items = {}
+    read_page = 0
+    past_items = @items.length
+    while true
+      url = create_request_url(read_page+1)
+      @items.merge! get_item_list(url)
+      break if past_length==@items.length
+      past_items = @items.length
+    end
+  end
+
+
   def get_item_list(url)
     items_on_list = {}
     xmlfile = open(url)

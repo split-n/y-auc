@@ -6,23 +6,24 @@ require './item.rb'
 require './yahoo_api.rb'
 
 
-TP13 = 2084307189
+TP13_ID = 2084307189
 
 def get_key_from_file(filename)
+  # utf-8のtxtファイルの一行目をkeyとして読む
   s = File.read(filename,encoding: Encoding::UTF_8)
   s.chomp
 end
 
-def testrun(apikey)
-  YahooAPI.set_api_key(apikey)
 
-  cat = CategoryItems.new(TP13,{sort_by: :current_price, order: :desc})
+apikey = get_key_from_file "key.txt"
+YahooAPI.set_api_key(apikey)
 
-  #cat.get_all
 
-  caty.take(110).each do |a|
-    puts "#{a.auction_id}-#{a.title}-#{a.current_price}"
-  end
+cat = CategoryItems.new(TP13_ID,{sort_by: :current_price, order: :desc})
+
+#cat.get_all
+
+cat.take(110).each do |a|
+  puts "#{a.auction_id} | #{a.title} \\#{a.current_price}"
 end
- key = get_key_from_file "key.txt"
-testrun(key)
+

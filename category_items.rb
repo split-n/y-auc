@@ -24,10 +24,9 @@ class CategoryItems < ListItems
   def create_request_url(page)
     url = "http://auctions.yahooapis.jp/AuctionWebService/V2/categoryLeaf?" + 
     "appid=#{@@api_key}" + 
-    "&category=#{@category_id.to_s}"
+    "&category=#{@category_id.to_s}" + 
+    "&page=#{page}"
 
-    # page = args[:page] if args[:page].is_a?(Integer)
-    # pageはオプションからの指定が有効、外部からは触らない
     args = @options
 
     sort = case args[:sort_by]
@@ -93,7 +92,7 @@ class CategoryItems < ListItems
         nil
       end
 
-    %w(buynow aucmaxprice aucminprice page sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price).each do |a|
+    %w(buynow aucmaxprice aucminprice sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price).each do |a|
       url += "&#{a}=#{eval(a)}" if eval(a)
     end
 

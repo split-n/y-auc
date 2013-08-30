@@ -11,7 +11,7 @@ class CategoryItems < ListItems
   include Enumerable
   include YahooAPI
 
-  attr_reader :category_id, :items, :options
+  attr_reader :category_id
 
   def initialize(category_id,opt={})
     super(opt)

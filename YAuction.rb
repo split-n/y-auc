@@ -16,10 +16,12 @@ end
 def testrun(apikey)
   YahooAPI.set_api_key(apikey)
 
-  cat = CategoryItems.new(TP13,{min_price: 100, sort_by: :end_time, order: :desc})
+  cat = CategoryItems.new(TP13,{sort_by: :current_price, order: :desc})
 
-  cat.lazy.take(60).each do |a|
-    p a.title
+  #cat.get_all
+
+  caty.take(110).each do |a|
+    puts "#{a.auction_id}-#{a.title}-#{a.current_price}"
   end
 end
  key = get_key_from_file "key.txt"

@@ -28,7 +28,7 @@ class ListItems
   end
   
   
-  def get_all_page_and_reqlace
+  def get_all
     @read_page = 0
     while (next_list = get_next_page) != {}
         @items.merge! next_list 

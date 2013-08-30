@@ -5,36 +5,21 @@ require 'pp'
 require 'pry'
 require 'date'
 require './yahoo_api.rb'
+require './list_items.rb'
 
 
 
-class CategoryItems
+class CategoryItems < ListItems
   include Enumerable
   include YahooAPI
 
   attr_reader :category_id, :items, :options
 
   def initialize(category_id,opt)
-    raise unless @@api_key
+    super(opt)
     @category_id = category_id
-    @items = {}
-    @options = opt
-    @red_page = 0
   end
 
-  def each
-    @items.each do |key,val|
-      yield val
-    end
-    while true
-      items = get_next_page
-      break if items=={}
-      items.each do |key,val|
-        yield val unless @items[key]
-        @items[key] = val
-      end
-    end
-  end
 
   private
 
@@ -121,26 +106,13 @@ class CategoryItems
   end
 
   def get_next_page
-    url = create_request_url(@red_page+1) 
+    url = create_request_url(@read_page+1) 
     item_list = get_item_list(url)
-    @red_page += 1
+    @read_page += 1
 =begin
     puts  "red:#{@red_page}"
 =end
     return item_list
-  end
-
-  def get_all_page_and_reqlace
-    @red_page = 0
-    @items = {}
-    read_page = 0
-    past_items = @items.length
-    while true
-      url = create_request_url(read_page+1)
-      @items.merge! get_item_list(url)
-      break if past_length==@items.length
-      past_items = @items.length
-    end
   end
 
 

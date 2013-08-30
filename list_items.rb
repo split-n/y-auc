@@ -19,9 +19,7 @@ class ListItems
     @items.each do |key,val|
       yield val
     end
-    while true
-      items = get_next_page
-      break if items=={}
+    while (items = get_next_page) != {}
       items.each do |key,val|
         yield val unless @items[key]
         @items[key] = val
@@ -55,4 +53,4 @@ class ListItems
     raise NotImplementedError
   end
 
-
+end

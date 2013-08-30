@@ -1,8 +1,6 @@
 # encoding:utf-8
 require 'open-uri'
 require 'nokogiri'
-require 'pp'
-require 'pry'
 require 'date'
 require './yahoo_api.rb'
 require './list_items.rb'
@@ -15,7 +13,7 @@ class CategoryItems < ListItems
 
   attr_reader :category_id, :items, :options
 
-  def initialize(category_id,opt)
+  def initialize(category_id,opt={})
     super(opt)
     @category_id = category_id
   end
@@ -105,15 +103,7 @@ class CategoryItems < ListItems
     return url
   end
 
-  def get_next_page
-    url = create_request_url(@read_page+1) 
-    item_list = get_item_list(url)
-    @read_page += 1
-=begin
-    puts  "red:#{@red_page}"
-=end
-    return item_list
-  end
+  
 
 
   def get_item_list(url)

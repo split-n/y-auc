@@ -1,4 +1,6 @@
 # encoding:utf-8
+require 'pp'
+require 'pry'
 require './category_items.rb'
 require './item.rb'
 require './yahoo_api.rb'

@@ -41,14 +41,8 @@ class ListItems
 
   def get_all_page_and_reqlace
     @read_page = 0
-    @items = {}
-    past_items = @items.length
-    while true
-      url = create_request_url(@read_page+1)
-      @items.merge! get_item_list(url)
-      break if past_length==@items.length
-      past_items = @items.length
-      @read_page += 1
+    while (next_list = get_next_page) != {}
+        @items.merge! next_list 
     end
   end
 

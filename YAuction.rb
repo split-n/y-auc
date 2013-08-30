@@ -20,7 +20,7 @@ def testrun(apikey)
 
   #cat.get_all
 
-  caty.take(110).each do |a|
+  cat.take(110).each do |a|
     puts "#{a.auction_id}-#{a.title}-#{a.current_price}"
   end
 end

@@ -29,16 +29,7 @@ class ListItems
     end
   end
   
-  def get_next_page
-    url = create_request_url(@read_page+1) 
-    item_list = get_item_list(url)
-    @read_page += 1
-=begin
-    puts  "red:#{@red_page}"
-=end
-    return item_list
-  end
-
+  
   def get_all_page_and_reqlace
     @read_page = 0
     while (next_list = get_next_page) != {}
@@ -48,8 +39,13 @@ class ListItems
 
   private
   def get_next_page
-    raise NotImplementedError
+    url = create_request_url(@read_page+1) 
+    item_list = get_item_list(url)
+    @read_page += 1
+    puts  "read:#{@read_page} page" if $DEBUG
+    return item_list
   end
+
 
   def create_request_url(page)
     raise NotImplementedError

@@ -126,7 +126,7 @@ class CategoryItems < ListItems
       item.buy_price = buyprice
       item.bids = elem.at('Bids').inner_text.to_i
 
-      item.get_from_category = @category_id
+      item.get_from[:category] = @category_id
 
       if item.valid?
         items_on_list[item.auction_id] = item

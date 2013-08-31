@@ -8,7 +8,6 @@ require './list_items.rb'
 
 class SearchItems < ListItems
   include Enumerable
-  include YahooAPI
 
   attr_reader :query
   

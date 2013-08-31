@@ -9,7 +9,6 @@ require './list_items.rb'
 
 class CategoryItems < ListItems
   include Enumerable
-  include YahooAPI
 
   attr_reader :category_id
 

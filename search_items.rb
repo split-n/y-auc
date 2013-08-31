@@ -89,6 +89,8 @@ class SearchItems < ListItems
         nil
       end
 
+    seller = args[:seller].join(",") # may be array
+
     f = case args[:search_target]
         when :only__title
           0x8
@@ -100,7 +102,7 @@ class SearchItems < ListItems
           nil
         end
 
-    %w(buynow aucmaxprice aucminprice sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price f category).each do |a|
+    %w(buynow aucmaxprice aucminprice sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price seller f category).each do |a|
       url += "&#{a}=#{eval(a)}" if eval(a)
     end
 

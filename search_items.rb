@@ -101,7 +101,7 @@ class SearchItems < ListItems
           nil
         end
 
-    %w(buynow aucmaxprice aucminpricee sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price f category).each do |a|
+    %w(buynow aucmaxprice aucminprice sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price f category).each do |a|
       url += "&#{a}=#{eval(a)}" if eval(a)
     end
 
@@ -111,14 +111,41 @@ class SearchItems < ListItems
     return url
   end
 
-
-
-
   def get_item_list(url)
+    items_on_list = {}
+    xmlfile = open(url)
+    doc = Nokogiri::XML(xmlfile)
+    doc.search('Item').each do |elem|
+      item = Item.new
+      item.auction_id = elem.at('AuctionID').inner_text
+      item.title = elem.at('Title').inner_text
+      item.category_id = elem.at('CategoryId').inner_text
+      item.seller_id = elem.at('Seller/Id').inner_text
+      item.item_url = elem.at('AuctionItemUrl').inner_text
+      item.image_url = elem.at('Image').inner_text
+      item.end_time = DateTime.parse(elem.at('EndTime').inner_text)
+      item.current_price = elem.at('CurrentPrice').inner_text.to_i
+      if elem.at('BidOrBuy') 
+        buyprice = elem.at('BidOrBuy').inner_text.to_i
+      else
+        buyprice = nil
+      end
+      item.buy_price = buyprice
+      item.bids = elem.at('Bids').inner_text.to_i
 
+      item.get_from[:search] = @query
 
-
+      if item.valid?
+        items_on_list[item.auction_id] = item
+      else
+        # for debug
+        PP.pp(item,STDERR)
+      end
+    end
+    return items_on_list
   end
+
+end
 
 
 

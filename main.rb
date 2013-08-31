@@ -2,6 +2,7 @@
 require 'pp'
 require 'pry'
 require './category_items.rb'
+require './search_items.rb'
 require './item.rb'
 require './yahoo_api.rb'
 
@@ -18,12 +19,10 @@ end
 apikey = get_key_from_file "key.txt"
 YahooAPI.set_api_key(apikey)
 
+search = SearchItems.new("ThinkPad",{sort_by: :current_price,order: :desc})
 
-cat = CategoryItems.new(TP13_ID,{sort_by: :current_price, order: :desc})
 
-#cat.get_all
-
-cat.take(110).each do |a|
+search.take(60).each do |a|
   puts "#{a.auction_id} | #{a.title} \\#{a.current_price}"
 end
 

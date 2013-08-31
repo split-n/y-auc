@@ -8,7 +8,7 @@ class Item
   attr_accessor :auction_id, :title, :seller_id, :item_url, :image_url, :end_time, :current_price, :buy_price, :bids,:category_id, :get_from
 
   def initialize
-      
+     @get_from = {} 
   end
 
   def valid?

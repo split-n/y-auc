@@ -105,37 +105,34 @@ class CategoryItems < ListItems
 
 
   def get_item_list(url)
-    items_on_list = {}
+    items_list = {}
     xmlfile = open(url)
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
       item = Item.new
-      item.auction_id = elem.at('AuctionID').inner_text
-      item.title = elem.at('Title').inner_text
-      item.seller_id = elem.at('Seller/Id').inner_text
-      item.item_url = elem.at('AuctionItemUrl').inner_text
-      item.image_url = elem.at('Image').inner_text
-      item.end_time = DateTime.parse(elem.at('EndTime').inner_text)
-      item.current_price = elem.at('CurrentPrice').inner_text.to_i
-      if elem.at('BidOrBuy') 
-        buyprice = elem.at('BidOrBuy').inner_text.to_i
-      else
-        buyprice = nil
-      end
-      item.buy_price = buyprice
-      item.bids = elem.at('Bids').inner_text.to_i
+      item.attrs[:auction_id] = elem.at('AuctionID').inner_text
+      item.attrs[:seller_id] = elem.at('Seller/Id').inner_text
+      item.attrs[:auction_item_url] = elem.at('AuctionItemUrl').inner_text
+      item.attrs[:image] = elem.at('Image').inner_text
+      item.attrs[:end_time] = DateTime.parse(elem.at('EndTime').inner_text)
+      item.attrs[:current_price] = elem.at('CurrentPrice').inner_text.to_i
 
-      item.get_from[:category] = @category_id
+      item.attrs[:bid_or_buy] = elem.at('BidOrBuy').inner_text.to_i if elem.at('BidOrBuy') 
+      item.attrs[:bids] = elem.at('Bids').inner_text.to_i
+
+      item.get_info[:from_category] = {}
+      item.get_info[:from_category][:category_id] = @category_id
+      item.get_info[:from_category][:get_date] = DateTime.now
+
 
       if item.valid?
-        items_on_list[item.auction_id] = item
+        items_list[item.auction_id] = item
       else
         # for debug
-        puts "::: validation error :::"
         PP.pp(item,STDERR)
       end
     end
-    return items_on_list
+    return items_list
   end
   
 end

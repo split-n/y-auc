@@ -41,12 +41,26 @@ class Item
   end  
 
   def update
-
+    p create_request_url
   end
 
   private
-  def get_my_info
+
+  def create_request_url
+    url = 'http://auctions.yahooapis.jp/AuctionWebService/V2/auctionItem?' +
+    "appid=#{@@api_key}"+ 
+    "&auctionID=#{self.auction_id}"
+
+    url
+  end
+
+  def get_my_info(url)
+    xmlfile = open(url)
+    doc = Nokogiri::XML(xmlfile)
+    doc.search('Item').each do |elem|
+
     
+    end
   end
 
 end

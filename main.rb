@@ -22,7 +22,6 @@ YahooAPI.set_api_key(apikey)
 search = SearchItems.new("ThinkPad",{sort_by: :current_price,order: :desc})
 
 
-search.take(60).each do |a|
-  puts "#{a.auction_id} | #{a.title} \\#{a.current_price}"
-end
+item = search.first
+item.update
 

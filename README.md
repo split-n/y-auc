@@ -1,4 +1,5 @@
 ### Yahoo! Auction用ツール
+完全な作りかけ
 
 ##### Classes
 - CategoryItem : カテゴリIDを指定してアイテムを取得/保持するクラス

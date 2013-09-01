@@ -89,7 +89,7 @@ class SearchItems < ListItems
         nil
       end
 
-    seller = args[:seller].join(",") # may be array
+    seller = args[:seller].join(",") if args[:seller] 
 
     f = case args[:search_target]
         when :only__title

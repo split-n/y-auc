@@ -1,32 +1,30 @@
 # encoding:utf-8
+
 require 'open-uri'
 require 'nokogiri'
 require 'date'
 require './yahoo_api.rb'
 require './list_items.rb'
 
-
-
-class CategoryItems < ListItems
+class SearchItems < ListItems
   include Enumerable
 
-  attr_reader :category_id
-
-  def initialize(category_id,opt={})
+  attr_reader :query
+  
+  def initialize(query,opt={})
     super(opt)
-    @category_id = category_id
+    @query = query
   end
 
-
-  private
-
   def create_request_url(page)
-    url = "http://auctions.yahooapis.jp/AuctionWebService/V2/categoryLeaf?" + 
+    url = "http://auctions.yahooapis.jp/AuctionWebService/V2/search?" + 
     "appid=#{@@api_key}" + 
-    "&category=#{@category_id.to_s}" + 
+    "&query=#{@query}" + 
     "&page=#{page}"
 
     args = @options
+
+    category = args[:category_id] if args[:category_id].is_a?(Integer)
 
     sort = case args[:sort_by]
       when :end_time
@@ -91,7 +89,20 @@ class CategoryItems < ListItems
         nil
       end
 
-    %w(buynow aucmaxprice aucminprice sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price).each do |a|
+    seller = args[:seller].join(",") if args[:seller] 
+
+    f = case args[:search_target]
+        when :only__title
+          0x8
+        when :title_and_text
+          0x4
+        when :title_and_keyword
+          0x2
+        else
+          nil
+        end
+
+    %w(buynow aucmaxprice aucminprice sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price seller f category).each do |a|
       url += "&#{a}=#{eval(a)}" if eval(a)
     end
 
@@ -101,9 +112,6 @@ class CategoryItems < ListItems
     return url
   end
 
-  
-
-
   def get_item_list(url)
     items_on_list = {}
     xmlfile = open(url)
@@ -112,6 +120,7 @@ class CategoryItems < ListItems
       item = Item.new
       item.auction_id = elem.at('AuctionID').inner_text
       item.title = elem.at('Title').inner_text
+      item.category_id = elem.at('CategoryId').inner_text
       item.seller_id = elem.at('Seller/Id').inner_text
       item.item_url = elem.at('AuctionItemUrl').inner_text
       item.image_url = elem.at('Image').inner_text
@@ -125,21 +134,19 @@ class CategoryItems < ListItems
       item.buy_price = buyprice
       item.bids = elem.at('Bids').inner_text.to_i
 
-      item.get_from[:category] = @category_id
+      item.get_from[:search] = @query
 
       if item.valid?
         items_on_list[item.auction_id] = item
       else
         # for debug
-        puts "::: validation error :::"
         PP.pp(item,STDERR)
       end
     end
     return items_on_list
   end
-  
-end
 
+end
 
 
 

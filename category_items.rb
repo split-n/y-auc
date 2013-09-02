@@ -110,20 +110,15 @@ class CategoryItems < ListItems
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
       item = Item.new
-      item.attrs[:auction_id] = elem.at('AuctionID').inner_text
-      item.attrs[:seller_id] = elem.at('Seller/Id').inner_text
-      item.attrs[:auction_item_url] = elem.at('AuctionItemUrl').inner_text
-      item.attrs[:image] = elem.at('Image').inner_text
-      item.attrs[:end_time] = DateTime.parse(elem.at('EndTime').inner_text)
-      item.attrs[:current_price] = elem.at('CurrentPrice').inner_text.to_i
-
-      item.attrs[:bid_or_buy] = elem.at('BidOrBuy').inner_text.to_i if elem.at('BidOrBuy') 
-      item.attrs[:bids] = elem.at('Bids').inner_text.to_i
+      attributes = [:auction_id,:title,:seller_id,:auction_item_url,
+                    :image,:end_time,:current_price,:bid_or_buy,:bids ]
+      get_tags(item,elem,attributes)
 
       item.get_info[:from_category] = {}
       item.get_info[:from_category][:category_id] = @category_id
       item.get_info[:from_category][:get_date] = DateTime.now
 
+      pp item
 
       if item.valid?
         items_list[item.auction_id] = item
@@ -134,6 +129,10 @@ class CategoryItems < ListItems
     end
     return items_list
   end
+  
+  
+
+
   
 end
 

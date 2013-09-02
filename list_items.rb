@@ -7,11 +7,24 @@ class ListItems
 
   attr_reader  :items, :options
 
+  
+
   def initialize(opt)
     raise unless @@api_key
     @items = {}
     @options = opt
     @read_page = 0
+    @tags_table = {
+      auction_id: ['AuctionID',String],
+      seller_id: ['Seller/Id',String],
+      auction_item_url: ['AuctionItemUrl',String],
+      image: ['Image',String],
+      end_time: ['EndTime',DateTime],
+      current_price: ['CurrentPrice',Integer],
+      bid_or_buy: ['BidOrBuy',Integer],
+      bids: ['Bids',Integer],
+      category_id: ['CategoryId',Integer]
+    }
   end
 
   def each
@@ -53,4 +66,25 @@ class ListItems
     raise NotImplementedError
   end
 
+  def get_tags(item,elem,require_tags)
+    # 1つのitemに相当する部分のxmlを渡す
+    binding.pry
+    require_tags.each do |key|
+      node_name = @tags_table[key][0]
+      type = @tags_table[key][1]
+      raise unless node_name
+      
+
+      innertext = elem.at(node_name).inner_text
+      case type
+      when String
+        item.attrs[key] = innertext
+      when DateTime
+        item.attrs[key] = DateTime.parse(innertext) 
+      when Integer
+        item.attrs[key] = innertext.to_i
+      end
+    end
+    return item
+  end
 end

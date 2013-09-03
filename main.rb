@@ -5,6 +5,7 @@ require './category_items.rb'
 require './search_items.rb'
 require './item.rb'
 require './yahoo_api.rb'
+require 'pry-byebug'
 
 
 TP13_ID = 2084307189

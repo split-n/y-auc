@@ -113,37 +113,29 @@ class SearchItems < ListItems
   end
 
   def get_item_list(url)
-    items_on_list = {}
+    items_list = {}
     xmlfile = open(url)
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
       item = Item.new
-      item.auction_id = elem.at('AuctionID').inner_text
-      item.title = elem.at('Title').inner_text
-      item.category_id = elem.at('CategoryId').inner_text
-      item.seller_id = elem.at('Seller/Id').inner_text
-      item.item_url = elem.at('AuctionItemUrl').inner_text
-      item.image_url = elem.at('Image').inner_text
-      item.end_time = DateTime.parse(elem.at('EndTime').inner_text)
-      item.current_price = elem.at('CurrentPrice').inner_text.to_i
-      if elem.at('BidOrBuy') 
-        buyprice = elem.at('BidOrBuy').inner_text.to_i
-      else
-        buyprice = nil
-      end
-      item.buy_price = buyprice
-      item.bids = elem.at('Bids').inner_text.to_i
+      attributes = [:auction_id,:title,:category_id,:seller_id,:auction_item_url,
+                    :image,:end_time,:current_price,:bid_or_buy,:bids ]
+      item = get_tags(item,elem,attributes)
 
-      item.get_from[:search] = @query
+      item.get_info[:from_search] = {}
+      item.get_info[:from_search][:query] = @query
+      item.get_info[:from_search][:get_date] = DateTime.now
+
+      #pp item
 
       if item.valid?
-        items_on_list[item.auction_id] = item
+        items_list[item.attrs[:auction_id]] = item
       else
         # for debug
         PP.pp(item,STDERR)
-      end
+      end   
     end
-    return items_on_list
+    return items_list
   end
 
 end

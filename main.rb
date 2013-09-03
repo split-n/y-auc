@@ -19,19 +19,19 @@ end
 
 apikey = get_key_from_file "key.txt"
 YahooAPI.set_api_key(apikey)
-=begin
+
 search = SearchItems.new("ThinkPad",{sort_by: :current_price,order: :desc})
 
-
 search.take(60).each do |a|
-  puts "#{a.auction_id} | #{a.title} \\#{a.current_price}"
+  p a
 end
-=end
 
+=begin
 cate = CategoryItems.new(TP13_ID,{sort_by: :current_price,order: :desc})
 
 cate.take(20).each do |a|
   puts a.attrs[:auction_id]
 end
+=end
 
 

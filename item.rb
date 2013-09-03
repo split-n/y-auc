@@ -14,7 +14,7 @@ class Item
   end
 
   def valid?
-    [:title,:seller_id,:item_url].each do |sym|
+    [:title,:seller_id,:auction_item_url,:auction_id].each do |sym|
       return false if @attrs[sym] == "" || !@attrs[sym].is_a?(String)
     end
     

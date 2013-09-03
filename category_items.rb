@@ -112,16 +112,16 @@ class CategoryItems < ListItems
       item = Item.new
       attributes = [:auction_id,:title,:seller_id,:auction_item_url,
                     :image,:end_time,:current_price,:bid_or_buy,:bids ]
-      get_tags(item,elem,attributes)
+      item = get_tags(item,elem,attributes)
 
       item.get_info[:from_category] = {}
       item.get_info[:from_category][:category_id] = @category_id
       item.get_info[:from_category][:get_date] = DateTime.now
 
-      pp item
+      #pp item
 
       if item.valid?
-        items_list[item.auction_id] = item
+        items_list[item.attrs[:auction_id]] = item
       else
         # for debug
         PP.pp(item,STDERR)

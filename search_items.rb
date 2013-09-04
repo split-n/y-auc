@@ -120,7 +120,7 @@ class SearchItems < ListItems
       item = Item.new
       attributes = [:auction_id,:title,:category_id,:seller_id,:auction_item_url,
                     :image,:end_time,:current_price,:bid_or_buy,:bids ]
-      item = get_tags(item,elem,attributes)
+      item.get_tags(elem,attributes)
 
       item.get_info[:from_search] = {}
       item.get_info[:from_search][:query] = @query

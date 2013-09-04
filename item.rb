@@ -6,12 +6,12 @@ require 'nokogiri'
 class Item
   include YahooAPI
 
-  attr_accessor :attrs,:get_info
+  attr_accessor :attrs,:info_when_get
 
   def initialize
      @attrs = {}
      # attrs には原則元xmlのタグをsnake_caseにしたものを使う
-     @get_info = {} 
+     @info_when_get= {} 
      @tags_table = {
       auction_id: ['AuctionID',"String"],
       seller_id: ['Seller/Id',"String"],

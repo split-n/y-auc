@@ -122,9 +122,9 @@ class SearchItems < ListItems
                     :image,:end_time,:current_price,:bid_or_buy,:bids ]
       item.get_tags(elem,attributes)
 
-      item.get_info[:from_search] = {}
-      item.get_info[:from_search][:query] = @query
-      item.get_info[:from_search][:get_date] = DateTime.now
+      item.info_when_get[:from_search] = {}
+      item.info_when_get[:from_search][:query] = @query
+      item.info_when_get[:from_search][:get_date] = DateTime.now
 
       #pp item
 

@@ -15,7 +15,8 @@ class Item
       bid_or_buy: ['BidOrBuy',"Integer"],
       bids: ['Bids',"Integer"],
       category_id: ['CategoryId',"Integer"],
-      title: ['Title',"String"]
+      title: ['Title',"String"],
+      is_reserved: ['IsReserved',"Boolean"],
     }
 
   attr_accessor :attrs,:info_when_get
@@ -55,6 +56,8 @@ class Item
           DateTime.parse(innertext) 
         when "Integer"
           innertext.to_i
+        when "Boolean"
+          (innertext=="true")
         else 
           raise
         end

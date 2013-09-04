@@ -17,6 +17,13 @@ class Item
       category_id: ['CategoryId',"Integer"],
       title: ['Title',"String"],
       is_reserved: ['IsReserved',"Boolean"],
+      store: ['StoreIcon',"Boolean"], #to do 
+      new_item: ['NewItemIcon',"Boolean"],
+      description: ['Description',"String"],
+      easypayment_creditcard: ['EasyPayment/IsCreditCard',"Boolean"],
+      easypayment_netbank: ['EasyPayment/IsNetBank',"Boolean"],
+      charge_for_shipping: ['ChargeForShipping',"String"], # to do
+      location:['Location',"String"],
     }
 
   attr_accessor :attrs,:info_when_get
@@ -57,7 +64,7 @@ class Item
         when "Integer"
           innertext.to_i
         when "Boolean"
-          (innertext=="true")
+          !(innertext=="false") #innertextが"false"の時のみfalse
         else 
           raise
         end

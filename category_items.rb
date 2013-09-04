@@ -112,11 +112,11 @@ class CategoryItems < ListItems
       item = Item.new
       attributes = [:auction_id,:title,:seller_id,:auction_item_url,
                     :image,:end_time,:current_price,:bid_or_buy,:bids ]
-      item = get_tags(item,elem,attributes)
+      item.get_tags(elem,attributes)
 
-      item.get_info[:from_category] = {}
-      item.get_info[:from_category][:category_id] = @category_id
-      item.get_info[:from_category][:get_date] = DateTime.now
+      item.info_when_get[:from_category] = {}
+      item.info_when_get[:from_category][:category_id] = @category_id
+      item.info_when_get[:from_category][:get_date] = DateTime.now
 
       #pp item
 

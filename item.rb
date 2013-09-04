@@ -5,14 +5,7 @@ require 'nokogiri'
 
 class Item
   include YahooAPI
-
-  attr_accessor :attrs,:info_when_get
-
-  def initialize
-     @attrs = {}
-     # attrs には原則元xmlのタグをsnake_caseにしたものを使う
-     @info_when_get= {} 
-     @tags_table = {
+  TAGS_TABLE = {
       auction_id: ['AuctionID',"String"],
       seller_id: ['Seller/Id',"String"],
       auction_item_url: ['AuctionItemUrl',"String"],
@@ -24,6 +17,13 @@ class Item
       category_id: ['CategoryId',"Integer"],
       title: ['Title',"String"]
     }
+
+  attr_accessor :attrs,:info_when_get
+
+  def initialize
+     @attrs = {}
+     # attrs には原則元xmlのタグをsnake_caseにしたものを使う
+     @info_when_get= {} 
   end
 
   def valid?
@@ -42,8 +42,8 @@ class Item
   def get_tags(elem,require_tags)
     # 1つのitemに相当する部分のxmlを渡す
     require_tags.each do |key|
-      node_name = @tags_table[key][0]
-      type = @tags_table[key][1]
+      node_name = TAGS_TABLE[key][0]
+      type = TAGS_TABLE[key][1]
       raise unless node_name
       node = elem.at(node_name)
       if node #nilの際は未代入のまま

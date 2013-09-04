@@ -73,18 +73,20 @@ class Item
   def create_request_url
     url = 'http://auctions.yahooapis.jp/AuctionWebService/V2/auctionItem?' +
     "appid=#{@@api_key}"+ 
-    "&auctionID=#{self.auction_id}"
+    "&auctionID=#{self.attrs[:auction_id]}"
 
     url
   end
 
   def get_my_info(url)
+    attributes = [:auction_id,:title,:category_id,:seller_id,
+    :auction_item_url,:image,:end_time,:current_price,:bid_or_buy,:bids ]
     xmlfile = open(url)
     doc = Nokogiri::XML(xmlfile)
-    doc.search('Item').each do |elem|
-
     
-    end
+
+    get_tags(doc,attributes)
+    
   end
 
 end

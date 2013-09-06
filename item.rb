@@ -87,13 +87,14 @@ class Item
 
     return true
   end
-  def get_tags(elem,require_tags)
+  def get_tags(elem)
     # 1つのitemに相当する部分のxmlを渡す
-    require_tags.each do |key|
-      tag_name = TAGS_TABLE[key][0]
-      proc_ = TAGS_TABLE[key][1]
+    TAGS_TABLE.each do |key,val|
+      tag_name = val[0]
+      proc_ = val[1]
       raise unless tag_name && proc_
-      self.attrs[key] = proc_.call(elem,tag_name)
+      content = proc_.call(elem,tag_name)
+      self.attrs[key]  = content if content != nil
     end
     self
   end

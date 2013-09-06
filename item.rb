@@ -17,7 +17,7 @@ class Item
 
     Tag_has_url = Proc.new { |elem,target_tag|
       tag_str = Tag_by_str.call(elem,target_tag)
-      tag_str ? (tag_str =~ /http/) : nil
+      tag_str ? (tag_str =~ /http/) : false
     }
 
     Tag_by_datetime = Proc.new {|elem,target_tag|
@@ -32,25 +32,37 @@ class Item
 
 
   TAGS_TABLE = {
+      # refer: http://developer.yahoo.co.jp/webapi/auctions/
       # 格納symbol: xpath,取得proc
       auction_id: ['AuctionID',Tag_by_str],
+      title: ['Title',Tag_by_str],
       seller_id: ['Seller/Id',Tag_by_str],
       auction_item_url: ['AuctionItemUrl',Tag_by_str],
       image: ['Image',Tag_by_str],
-      end_time: ['EndTime',Tag_by_datetime],
       current_price: ['CurrentPrice',Tag_by_int],
-      bid_or_buy: ['BidOrBuy',Tag_by_int],
       bids: ['Bids',Tag_by_int],
-      category_id: ['CategoryId',Tag_by_int],
-      title: ['Title',Tag_by_str],
+      end_time: ['EndTime',Tag_by_datetime],
+      bid_or_buy: ['BidOrBuy',Tag_by_int],
       is_reserved: ['IsReserved',Tag_by_bool ],
-      store: ['StoreIcon',"Boolean"], #to do 
-      new_item: ['NewItemIcon',"Boolean"],
-      description: ['Description',Tag_by_str],
-      easypayment_creditcard: ['EasyPayment/IsCreditCard',"Boolean"],
-      easypayment_netbank: ['EasyPayment/IsNetBank',"Boolean"],
-      charge_for_shipping: ['ChargeForShipping',"String"], # to do
-      location: ['Location',Tag_by_str],
+      charity_percent: ['CharityOption/Proportion',Tag_by_int],
+      affiliate_rate: ['Affiliate/Rate',Tag_by_int],
+
+      new_sale: ['NewIcon',Tag_has_url],
+      store: ['StoreIcon',Tag_has_url],  
+      checked: ['CheckIcon',Tag_has_url],  
+      public: ['PublicIcon',Tag_has_url],  
+      featured: ['FeaturedIcon',Tag_has_url],  
+      free_shipping: ['FreeshippingIcon',Tag_has_url],  
+      new_item: ['NewItemIcon',Tag_has_url],
+      wrapping: ['WrappingIcon',Tag_has_url],
+      easypayment: ['EasyPaymentIcon',Tag_has_url],
+      is_offer: ['IsOffer',Tag_by_bool],
+      is_adult: ['IsAdult',Tag_by_bool],
+
+      category_id: ['CategoryId',Tag_by_int],
+
+
+
       }
 
     
@@ -81,7 +93,7 @@ class Item
       tag_name = TAGS_TABLE[key][0]
       proc_ = TAGS_TABLE[key][1]
       raise unless tag_name && proc_
-      self.attrs[tag_name] = proc_.call(elem,tag_name)
+      self.attrs[key] = proc_.call(elem,tag_name)
     end
     self
   end

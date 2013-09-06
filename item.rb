@@ -17,7 +17,11 @@ class Item
 
     Tag_has_url = Proc.new { |elem,target_tag|
       tag_str = Tag_by_str.call(elem,target_tag)
-      tag_str ? (tag_str =~ /http/) : false
+      if (tag_str =~ /http/)
+        true
+      else
+        false
+      end
     }
 
     Tag_by_datetime = Proc.new {|elem,target_tag|

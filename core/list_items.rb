@@ -1,5 +1,5 @@
 # encoding:utf-8
-require './yahoo_api.rb'
+require_relative './yahoo_api.rb'
 
 class ListItems 
   include Enumerable

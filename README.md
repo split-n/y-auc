@@ -2,7 +2,7 @@
 完全な作りかけ
 
 ##### Classes
-- CategoryItem : カテゴリIDを指定してアイテムを取得/保持するクラス
+- CategoryItem : カテゴリIDを指定してアイテムリストを取得/保持するクラス
 - SearchItem : 検索結果で同上
 - Item : 出品物
 - YahooAPI : 現状API KEYのセット用

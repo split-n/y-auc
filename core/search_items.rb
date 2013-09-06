@@ -1,32 +1,31 @@
 # encoding:utf-8
+
 require 'open-uri'
 require 'nokogiri'
 require 'date'
-require './yahoo_api.rb'
-require './list_items.rb'
+require_relative './yahoo_api.rb'
+require_relative './list_items.rb'
+require_relative './item.rb'
 
-
-
-class CategoryItems < ListItems
+class SearchItems < ListItems
   include Enumerable
 
-  attr_reader :category_id
-
-  def initialize(category_id,opt={})
+  attr_reader :query
+  
+  def initialize(query,opt={})
     super(opt)
-    @category_id = category_id
+    @query = query
   end
 
-
-  private
-
   def create_request_url(page)
-    url = "http://auctions.yahooapis.jp/AuctionWebService/V2/categoryLeaf?" + 
+    url = "http://auctions.yahooapis.jp/AuctionWebService/V2/search?" + 
     "appid=#{@@api_key}" + 
-    "&category=#{@category_id.to_s}" + 
+    "&query=#{@query}" + 
     "&page=#{page}"
 
     args = @options
+
+    category = args[:category_id] if args[:category_id].is_a?(Integer)
 
     sort = case args[:sort_by]
       when :end_time
@@ -91,7 +90,20 @@ class CategoryItems < ListItems
         nil
       end
 
-    %w(buynow aucmaxprice aucminprice sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price).each do |a|
+    seller = args[:seller].join(",") if args[:seller] 
+
+    f = case args[:search_target]
+        when :only__title
+          0x8
+        when :title_and_text
+          0x4
+        when :title_and_keyword
+          0x2
+        else
+          nil
+        end
+
+    %w(buynow aucmaxprice aucminprice sort order store item_status aucmin_bidorbuy_price aucmax_bidorbuy_price seller f category).each do |a|
       url += "&#{a}=#{eval(a)}" if eval(a)
     end
 
@@ -101,22 +113,19 @@ class CategoryItems < ListItems
     return url
   end
 
-  
-
-
   def get_item_list(url)
     items_list = {}
     xmlfile = open(url)
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
       item = Item.new
-      attributes = [:auction_id,:title,:seller_id,:auction_item_url,
+      attributes = [:auction_id,:title,:category_id,:seller_id,:auction_item_url,
                     :image,:end_time,:current_price,:bid_or_buy,:bids ]
       item.get_tags(elem)
 
-      item.info_when_get[:from_category] = {}
-      item.info_when_get[:from_category][:category_id] = @category_id
-      item.info_when_get[:from_category][:get_date] = DateTime.now
+      item.info_when_get[:from_search] = {}
+      item.info_when_get[:from_search][:query] = @query
+      item.info_when_get[:from_search][:get_date] = DateTime.now
 
       #pp item
 
@@ -125,17 +134,12 @@ class CategoryItems < ListItems
       else
         # for debug
         PP.pp(item,STDERR)
-      end
+      end   
     end
     return items_list
   end
-  
-  
 
-
-  
 end
-
 
 
 

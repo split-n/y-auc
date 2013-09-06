@@ -1,6 +1,6 @@
 # encoding:utf-8
 require 'date'
-require './yahoo_api.rb'
+require_relative './yahoo_api.rb'
 require 'nokogiri'
 
 class Item

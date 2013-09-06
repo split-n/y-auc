@@ -1,10 +1,9 @@
 # encoding:utf-8
 require 'pp'
 require 'pry'
-require './category_items.rb'
-require './search_items.rb'
-require './item.rb'
-require './yahoo_api.rb'
+require_relative './core/category_items.rb'
+require_relative './core/search_items.rb'
+require_relative './core/yahoo_api.rb'
 require 'pry-byebug'
 
 

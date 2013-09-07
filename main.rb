@@ -1,13 +1,13 @@
 # encoding:utf-8
 require 'pp'
 require 'pry'
-require './category_items.rb'
-require './search_items.rb'
-require './item.rb'
-require './yahoo_api.rb'
+require_relative './core/category_items.rb'
+require_relative './core/search_items.rb'
+require_relative './core/yahoo_api.rb'
+require 'pry-byebug'
 
 
-TP13_CATID = 2084307189
+TP13_ID = 2084307189
 
 def get_key_from_file(filename)
   # utf-8のtxtファイルの一行目をkeyとして読む
@@ -19,18 +19,16 @@ end
 apikey = get_key_from_file "key.txt"
 YahooAPI.set_api_key(apikey)
 
-# example for usage
-search1 = SearchItems.new("MacBook",{sort_by: :current_price,order: :desc})
-category1 = CategoryItems.new(TP13_CATID,{
-  max_buy_price:40000,sort_by: :end_time,order: :desc})
+search = SearchItems.new("ThinkPad",{sort_by: :current_price,order: :desc})
 
-
-search1.take(20).each do |a|
-  puts "#{a.auction_id} | #{a.title} \\#{a.current_price}"
+search.take(20).each do |a|
+  pp a
 end
 
-puts "=============="
+cate = CategoryItems.new(TP13_ID,{sort_by: :current_price,order: :desc})
 
-category1.take(30).each do |a|
-  puts "#{a.title} | #{a.current_price} | #{a.end_time}"
+cate.take(20).each do |a|
+  pp a
 end
+
+

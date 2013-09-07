@@ -1,4 +1,4 @@
-runwithkey.rb
-test.rb
 *.swp
 Gemfile.lock
+key.txt
+/etc

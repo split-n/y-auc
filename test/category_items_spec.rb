@@ -42,6 +42,17 @@ describe CategoryItems do
       end
     end
 
+    it "即決価格の範囲指定が正常にされているか確認" do 
+      max = 50000
+      min = 30000
+      cate = CategoryItems.new(TP13_ID,{min_buy_price: min,max_buy_price: max})
+      cate.take(50).each do |item|
+        item.attrs[:buy_price].should be_within(max).of(min)
+      end
+    end
+
+
+
   end
 
 

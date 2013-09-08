@@ -26,7 +26,7 @@ describe CategoryItems do
       cate = CategoryItems.new(TP13_ID,{buynow: true,item_status: :used,store: :normal})
       cate.take(100).each do |item|
         item.attrs[:store].should be_false
-        item.attrs[:bid_or_buy].should be_a_kind_of Integer
+        item.attrs[:buy_price].should be_a_kind_of Integer
         item.attrs[:new_item].should be_false
 
       end
@@ -36,7 +36,7 @@ describe CategoryItems do
       cate = CategoryItems.new(TP13_ID,{buynow: false,item_status: :new,store: :store})
       cate.take(100).each do |item|
         item.attrs[:store].should be_true
-        item.attrs[:bid_or_buy].should be_nil
+        item.attrs[:buy_price].should be_nil
         item.attrs[:new_item].should be_true
 
       end

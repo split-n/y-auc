@@ -21,14 +21,9 @@ YahooAPI.set_api_key(apikey)
 
 search = SearchItems.new("ThinkPad",{sort_by: :current_price,order: :desc})
 
-search.take(20).each do |a|
-  pp a
-end
+item = search.first
+pp item 
 
-cate = CategoryItems.new(TP13_ID,{sort_by: :current_price,order: :desc})
+item.update!
 
-cate.take(20).each do |a|
-  pp a
-end
-
-
+pp item

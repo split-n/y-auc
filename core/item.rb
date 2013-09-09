@@ -1,7 +1,8 @@
 # encoding:utf-8
 require 'date'
-require_relative './yahoo_api.rb'
 require 'nokogiri'
+require 'open-uri'
+require_relative './yahoo_api.rb'
 
 class Item
   include YahooAPI
@@ -65,6 +66,10 @@ class Item
 
       category_id: ['CategoryId',Tag_by_int],
 
+      description: ['Description',Tag_by_str],
+
+
+
 
 
       }
@@ -104,13 +109,15 @@ class Item
   end
 
 
-  def update
-
-  end
-
-  private
-  def get_my_info
+  def update!
+    request_url = "http://auctions.yahooapis.jp/AuctionWebService/V2/auctionItem?appid=#{@@api_key}&auctionID=#{self.attrs[:auction_id]}"
+    xmlstr = open(request_url)
+    doc = Nokogiri.XML(xmlstr)
+    self.get_tags(doc)
     
+    self.info_when_get[:from_self] = {}
+    self.info_when_get[:from_self][:get_date] = DateTime.now  
   end
+
 
 end

@@ -46,7 +46,7 @@ class Item
       current_price: ['CurrentPrice',Tag_by_int],
       bids: ['Bids',Tag_by_int],
       end_time: ['EndTime',Tag_by_datetime],
-      bid_or_buy: ['BidOrBuy',Tag_by_int],
+      buy_price: ['BidOrBuy',Tag_by_int],
       is_reserved: ['IsReserved',Tag_by_bool ],
       charity_percent: ['CharityOption/Proportion',Tag_by_int],
       affiliate_rate: ['Affiliate/Rate',Tag_by_int],

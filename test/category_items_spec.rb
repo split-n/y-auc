@@ -26,7 +26,7 @@ describe CategoryItems do
       cate = CategoryItems.new(TP13_ID,{buynow: true,item_status: :used,store: :normal})
       cate.take(100).each do |item|
         item.attrs[:store].should be_false
-        item.attrs[:bid_or_buy].should be_a_kind_of Integer
+        item.attrs[:buy_price].should be_a_kind_of Integer
         item.attrs[:new_item].should be_false
 
       end
@@ -36,11 +36,22 @@ describe CategoryItems do
       cate = CategoryItems.new(TP13_ID,{buynow: false,item_status: :new,store: :store})
       cate.take(100).each do |item|
         item.attrs[:store].should be_true
-        item.attrs[:bid_or_buy].should be_nil
+        item.attrs[:buy_price].should be_nil
         item.attrs[:new_item].should be_true
 
       end
     end
+
+    it "即決価格の範囲指定が正常にされているか確認" do 
+      max = 50000
+      min = 30000
+      cate = CategoryItems.new(TP13_ID,{min_buy_price: min,max_buy_price: max})
+      cate.take(50).each do |item|
+        item.attrs[:buy_price].should be_within(max).of(min)
+      end
+    end
+
+
 
   end
 

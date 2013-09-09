@@ -11,7 +11,7 @@ describe SearchItems do
   it "検索クエリに指定した文字列が一般商品のタイトルに含まれている" do 
     query = "ThinkPad"
     search = SearchItems.new(query,{store: :normal})
-    matcher = Regexp.new(query, Regexp::IGNORECASE)
+    matcher = Regexp.new(query + "|" + query.tr('a-z', 'ａ-ｚ').tr('A-Z', 'Ａ-Ｚ'), Regexp::IGNORECASE)
     search.take(90).each do |item|
       item.attrs[:title].should match matcher
 

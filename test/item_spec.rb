@@ -66,7 +66,19 @@ ENDOFSTRING
     item.attrs[:current_price].should == 35000
      
   end
+
+  it "内容のアップデートが出来る" do 
+    item = Item.new
+    item.get_tags(@xml)
+    pp item
+    item.update!
+    except (
+    item.attrs[:description].is_a?(String) and
+    item.attrs[:description].length > 10
+    ).to be_true
+  end
   
+
     
 
 

@@ -111,8 +111,6 @@ class CategoryItems < ListItems
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
       item = Item.new
-      attributes = [:auction_id,:title,:seller_id,:auction_item_url,
-                    :image,:end_time,:current_price,:bid_or_buy,:bids ]
       item.get_tags(elem)
 
       item.info_when_get[:from_category] = {}

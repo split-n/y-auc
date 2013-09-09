@@ -1,5 +1,6 @@
 # encoding:utf-8
 require_relative '../core/item.rb'
+require_relative '../core/yahoo_api.rb'
 
 describe Item do
   
@@ -56,6 +57,9 @@ http://image.auctions.yahoo.co.jp/images/premium.gif
 ENDOFSTRING
   @xml = Nokogiri.parse(xml_str)
 
+   YahooAPI.set_api_key( 
+     File.read('../key.txt',encoding: Encoding::UTF_8).chomp )
+
   end
 
   it "categoryLeafの部分的なxmlからget_tagsが問題なくparseできているか" do
@@ -70,12 +74,10 @@ ENDOFSTRING
   it "内容のアップデートが出来る" do 
     item = Item.new
     item.get_tags(@xml)
-    pp item
     item.update!
-    except (
-    item.attrs[:description].is_a?(String) and
-    item.attrs[:description].length > 10
-    ).to be_true
+    expect(
+    item.attrs[:description].is_a?(String) &&
+    item.attrs[:description].length > 10  ).to be_true
   end
   
 

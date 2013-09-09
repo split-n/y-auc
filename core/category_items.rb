@@ -120,7 +120,7 @@ class CategoryItems < ListItems
       #pp item
 
       if item.valid?
-        items_list[item.attrs[:auction_id]] = item
+        items_list[item.auction_id] = item
       else
         # for debug
         PP.pp(item,STDERR)

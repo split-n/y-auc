@@ -65,7 +65,7 @@ ENDOFSTRING
   it "categoryLeafの部分的なxmlからget_tagsが問題なくparseできているか" do
     item = Item.new
     item.get_tags(@xml)
-    item.attrs[:auction_id].should  == "t305862326"
+    item.auction_id.should  == "t305862326"
     item.attrs[:free_shipping].should == false
     item.attrs[:current_price].should == 35000
      

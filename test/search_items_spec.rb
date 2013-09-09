@@ -12,8 +12,10 @@ describe SearchItems do
     query = "ThinkPad"
     search = SearchItems.new(query,{store: :normal})
     matcher = Regexp.new(query, Regexp::IGNORECASE)
-    search.take(90).each do |item|
-      item.attrs[:title].should match matcher
+    search.lazy.take(150).each do |item|
+      expect(
+      item.attrs[:title].tr('ａ-ｚ','a-z').tr('Ａ-Ｚ','A-Z').tr('０-９','0-9')
+      ).to match matcher
 
     end
   end

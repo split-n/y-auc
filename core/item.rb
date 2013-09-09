@@ -39,7 +39,6 @@ class Item
   TAGS_TABLE = {
       # refer: http://developer.yahoo.co.jp/webapi/auctions/
       # 格納symbol: xpath,取得proc
-      auction_id: ['AuctionID',Tag_by_str],
       title: ['Title',Tag_by_str],
       seller_id: ['Seller/Id',Tag_by_str],
       auction_item_url: ['AuctionItemUrl',Tag_by_str],
@@ -75,7 +74,7 @@ class Item
       }
 
     
-  attr_accessor :attrs,:info_when_get
+  attr_accessor :auction_id,:attrs,:info_when_get
 
   def initialize
      @attrs = {}
@@ -84,7 +83,7 @@ class Item
   end
 
   def valid?
-    [:title,:seller_id,:auction_item_url,:auction_id].each do |sym|
+    [:title,:seller_id,:auction_item_url].each do |sym|
       return false if @attrs[sym] == "" || !@attrs[sym].is_a?(String)
     end
     
@@ -105,12 +104,13 @@ class Item
       content = proc_.call(elem,tag_name)
       self.attrs[key]  = content if content != nil
     end
+    @auction_id = Tag_by_str.call(elem,'AuctionID')
     self
   end
 
 
   def update!
-    request_url = "http://auctions.yahooapis.jp/AuctionWebService/V2/auctionItem?appid=#{@@api_key}&auctionID=#{self.attrs[:auction_id]}"
+    request_url = "http://auctions.yahooapis.jp/AuctionWebService/V2/auctionItem?appid=#{@@api_key}&auctionID=#{self.auction_id}"
     xmlstr = open(request_url)
     doc = Nokogiri.XML(xmlstr)
     self.get_tags(doc)

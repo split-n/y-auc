@@ -119,8 +119,6 @@ class SearchItems < ListItems
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
       item = Item.new
-      attributes = [:auction_id,:title,:category_id,:seller_id,:auction_item_url,
-                    :image,:end_time,:current_price,:bid_or_buy,:bids ]
       item.get_tags(elem)
 
       item.info_when_get[:from_search] = {}
@@ -130,7 +128,7 @@ class SearchItems < ListItems
       #pp item
 
       if item.valid?
-        items_list[item.attrs[:auction_id]] = item
+        items_list[item.auction_id] = item
       else
         # for debug
         PP.pp(item,STDERR)

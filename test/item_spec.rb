@@ -1,10 +1,14 @@
 # encoding:utf-8
 require_relative '../core/item.rb'
 require_relative '../core/yahoo_api.rb'
+require_relative '../core/xml_parse_sets.rb'
+
+include XmlParseSets
 
 describe Item do
   
   before :all do 
+
     xml_str = <<'ENDOFSTRING'
 <Item>
 <AuctionID>t305862326</AuctionID>

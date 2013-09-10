@@ -6,12 +6,19 @@ require 'date'
 require_relative './yahoo_api.rb'
 require_relative './list_items.rb'
 require_relative './item.rb'
+require_relative './xml_parse_sets.rb'
+
+include XmlParseSets
 
 class SearchItems < ListItems
   include Enumerable
 
   attr_reader :query
   
+  Search_tags = {
+      category_id: ['CategoryId',Tag_by_int]
+  }
+
   def initialize(query,opt={})
     super(opt)
     @query = query
@@ -119,7 +126,7 @@ class SearchItems < ListItems
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
       item = Item.new
-      item.get_tags(elem)
+      item.get_tags(elem,Common_tags.merge(Search_tags))
 
       item.info_when_get[:from_search] = {}
       item.info_when_get[:from_search][:query] = @query
@@ -136,6 +143,7 @@ class SearchItems < ListItems
     end
     return items_list
   end
+
 
 end
 

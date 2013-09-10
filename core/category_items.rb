@@ -5,11 +5,17 @@ require 'date'
 require_relative './yahoo_api.rb'
 require_relative './list_items.rb'
 require_relative './item.rb'
+require_relative './xml_parse_sets.rb'
 
+include XmlParseSets
 
 
 class CategoryItems < ListItems
   include Enumerable
+  
+  Category_tags = {
+
+  }
 
   attr_reader :category_id
 
@@ -111,7 +117,7 @@ class CategoryItems < ListItems
     doc = Nokogiri::XML(xmlfile)
     doc.search('Item').each do |elem|
       item = Item.new
-      item.get_tags(elem)
+      item.get_tags(elem,Common_tags.merge(Category_tags))
 
       item.info_when_get[:from_category] = {}
       item.info_when_get[:from_category][:category_id] = @category_id
@@ -128,7 +134,6 @@ class CategoryItems < ListItems
     end
     return items_list
   end
-  
   
 
 

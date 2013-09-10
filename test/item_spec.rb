@@ -64,7 +64,7 @@ ENDOFSTRING
 
   it "categoryLeafの部分的なxmlからget_tagsが問題なくparseできているか" do
     item = Item.new
-    item.get_tags(@xml)
+    item.get_tags(@xml,Common_tags)
     item.auction_id.should  == "t305862326"
     item.attrs[:free_shipping].should == false
     item.attrs[:current_price].should == 35000
@@ -73,7 +73,7 @@ ENDOFSTRING
 
   it "内容のアップデートが出来る" do 
     item = Item.new
-    item.get_tags(@xml)
+    item.get_tags(@xml,Common_tags)
     item.update!
     expect(
     item.attrs[:description].is_a?(String) &&

@@ -16,6 +16,7 @@ class SearchItems < ListItems
   attr_reader :query
   
   Search_tags = {
+      current_price: ['CurrentPrice',Tag_by_int],
       category_id: ['CategoryId',Tag_by_int]
   }
 

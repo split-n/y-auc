@@ -11,12 +11,15 @@ class Item
   include YahooAPI
 
   Item_tags = {
+    category_id: ['CategoryId',Tag_by_int]
     category_path: ['CategoryPath',Tag_by_str], # t odo
     seller_point: ['Seller/Rating/Point',Tag_by_int],
-    description: ['Description',Tag_by_str],
+    seller_suspended: ['Seller/Rating/IsSuspended',Tag_by_bool],
+    seller_deleted: ['Seller/Rating/IsDeleted',Tag_by_bool],
+    images:[['Image1','Image2','Image3'],Tag_by_str_array],
     init_price: ['Initprice',Tag_by_int],
     current_price: ['Price',Tag_by_int],
-    quant: ['Quant',Tag_by_int],
+    quantity: ['Quantity',Tag_by_int],
     item_condition: ['ItemStatus/Condition',Tag_by_str],
     item_condition_comment: ['ItemStatus/Comment',Tag_by_str],
     item_returnable: ['ItemReturnable/Allowed',Tag_by_bool],
@@ -26,10 +29,22 @@ class Item
     early_closing: ['IsEarlyClosing',Tag_by_bool],
     down_offer: ['IsOffer',Tag_by_bool],
     charge_for_shopping: ['ChargeForShopping',Tag_by_str],
+    description: ['Description',Tag_by_str],
     location: ['Location',Tag_by_str],
     ship_time: ['ShipTime',Tag_by_str],
 
   }
+
+  Tag_by_str_array = Proc.new { |elem,target_tags|
+    tmp = {}
+    target_tag.each do |tag|
+      result = Tag_by_str.call(elem,tag)
+      tmp << result if result
+    end
+    return tmp
+  }
+
+
 
   attr_accessor :auction_id,:attrs,:info_when_get
 

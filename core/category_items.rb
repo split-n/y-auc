@@ -14,6 +14,7 @@ class CategoryItems < ListItems
   include Enumerable
   
   Category_tags = {
+      current_price: ['CurrentPrice',Tag_by_int],
 
   }
 

@@ -38,7 +38,6 @@ module XmlParseSets
       seller_id: ['Seller/Id',Tag_by_str],
       auction_item_url: ['AuctionItemUrl',Tag_by_str],
       image: ['Image',Tag_by_str],
-      current_price: ['CurrentPrice',Tag_by_int],
       bids: ['Bids',Tag_by_int],
       end_time: ['EndTime',Tag_by_datetime],
       buy_price: ['BidOrBuy',Tag_by_int],

@@ -14,7 +14,8 @@ class SearchItems < AuctionListItems
   attr_reader :query
   
   Search_tags = {
-      category_id: ['CategoryId',Tag_by_int]
+      category_id: ['CategoryId',Tag_by_int],
+      category_path: ['CategoryPath',Tag_by_str],
   }
 
   def initialize(query,opt={})

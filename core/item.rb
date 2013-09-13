@@ -13,25 +13,46 @@ class Item
   Item_tags = {
     title: ['Title',Tag_by_str],
     seller_id: ['Seller/Id',Tag_by_str],
-    auction_item_url: ['AuctionItemUrl',Tag_by_str],
-    category_path: ['CategoryPath',Tag_by_str], # t odo
+    category_id: ['CategoryId',Tag_by_int],
+    category_path: ['CategoryPath',Tag_by_str],
     seller_point: ['Seller/Rating/Point',Tag_by_int],
-    description: ['Description',Tag_by_str],
+    seller_suspended: ['Seller/Rating/IsSuspended',Tag_by_bool],
+    seller_deleted: ['Seller/Rating/IsDeleted',Tag_by_bool],
+    auction_item_url: ['AuctionItemUrl',Tag_by_str],
+    images: ['',Proc.new {|elem|
+	  imgs = []
+	  %w(Image1 Image2 Image3).each do |tag|
+		  imgs << Tag_by_str.call(elem,tag)
+	  end
+	  next imgs 
+      }],
     init_price: ['Initprice',Tag_by_int],
     current_price: ['Price',Tag_by_int],
-    quant: ['Quant',Tag_by_int],
+    quantity: ['Quantity',Tag_by_int],
+    bids: ['Bids',Tag_by_int],
+    description: ['Description',Tag_by_str],
     item_condition: ['ItemStatus/Condition',Tag_by_str],
     item_condition_comment: ['ItemStatus/Comment',Tag_by_str],
     item_returnable: ['ItemReturnable/Allowed',Tag_by_bool],
     start_time: ['StartTime',Tag_by_datetime],
-    reserved: ['Reserved',Tag_by_int],
+    end_time: ['EndTime',Tag_by_datetime],
+    buy_price: ['BidOrBuy',Tag_by_int],
+
+    is_reserved: ['Reserved',Tag_by_int],
     bidder_restriction: ['IsBidderRestrictions',Tag_by_bool],
     early_closing: ['IsEarlyClosing',Tag_by_bool],
     down_offer: ['IsOffer',Tag_by_bool],
+    store: ['StoreIcon',Tag_has_url],  
+    checked: ['CheckIcon',Tag_has_url],  
+    featured: ['FeaturedIcon',Tag_has_url],  
+    free_shipping: ['FreeshippingIcon',Tag_has_url],  
+    easypayment: ['EasyPaymentIcon',Tag_has_url],
     charge_for_shopping: ['ChargeForShopping',Tag_by_str],
-    location: ['Location',Tag_by_str],
+    ship_location: ['Location',Tag_by_str],
     ship_time: ['ShipTime',Tag_by_str],
-
+    size: ['Size',Tag_by_int],
+    weight: ['Weight',Tag_by_int],
+    charity_percent: ['CharityOption/Proportion',Tag_by_int],
   }
 
   attr_accessor :auction_id,:attrs,:info_when_get

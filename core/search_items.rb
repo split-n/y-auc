@@ -8,8 +8,6 @@ require_relative './item.rb'
 require_relative './xml_parse_sets.rb'
 require_relative './auction_list_items.rb'
 
-include XmlParseSets
-
 class SearchItems < AuctionListItems
   include Enumerable
 

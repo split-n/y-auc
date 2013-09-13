@@ -7,7 +7,6 @@ require_relative './auction_list_items.rb'
 require_relative './item.rb'
 require_relative './xml_parse_sets.rb'
 
-include XmlParseSets
 
 
 class CategoryItems < AuctionListItems

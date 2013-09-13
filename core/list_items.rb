@@ -9,7 +9,7 @@ class ListItems
   
 
   def initialize()
-    items = {}
+    @items = {}
     @read_page = 0
   end
 

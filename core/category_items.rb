@@ -3,14 +3,14 @@ require 'open-uri'
 require 'nokogiri'
 require 'date'
 require_relative './yahoo_api.rb'
-require_relative './list_items.rb'
+require_relative './auction_list_items.rb'
 require_relative './item.rb'
 require_relative './xml_parse_sets.rb'
 
 include XmlParseSets
 
 
-class CategoryItems < ListItems
+class CategoryItems < AuctionListItems
   include Enumerable
   
   Category_tags = {
@@ -113,11 +113,10 @@ class CategoryItems < ListItems
 
   def get_item_list(url)
     items_list = {}
-    xmlfile = open(url)
-    doc = Nokogiri::XML(xmlfile)
-    doc.search('Item').each do |elem|
+    items_xml_list = get_items_xml(url)
+    items_xml_list.each do |perxml|
       item = Item.new
-      item.get_tags(elem,Common_tags.merge(Category_tags))
+      item.get_tags(perxml,Common_tags.merge(Category_tags))
 
       item.info_when_get[:from_category] = {}
       item.info_when_get[:from_category][:category_id] = @category_id

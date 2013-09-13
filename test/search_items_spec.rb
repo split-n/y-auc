@@ -31,10 +31,10 @@ describe SearchItems do
 
    loop do
        next1 = en1.next
-       (next1.attrs[:end_time] > tmp1).should be_true
+       (next1.attrs[:end_time] >= tmp1).should be_true
        tmp1 = next1.attrs[:end_time] 
        next2 = en2.next
-       (next2.attrs[:end_time] > tmp2).should be_true
+       (next2.attrs[:end_time] >= tmp2).should be_true
        tmp2 = next2.attrs[:end_time] 
     end
 

@@ -11,6 +11,9 @@ class Item
   include YahooAPI
 
   Item_tags = {
+    title: ['Title',Tag_by_str],
+    seller_id: ['Seller/Id',Tag_by_str],
+    auction_item_url: ['AuctionItemUrl',Tag_by_str],
     category_path: ['CategoryPath',Tag_by_str], # t odo
     seller_point: ['Seller/Rating/Point',Tag_by_int],
     description: ['Description',Tag_by_str],

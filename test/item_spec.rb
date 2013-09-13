@@ -68,7 +68,8 @@ ENDOFSTRING
 
   it "categoryLeafの部分的なxmlからget_tagsが問題なくparseできているか" do
     item = Item.new
-    item.get_tags(@xml,Item::Item_tags)
+    require_relative '../core/auction_list_items.rb'
+    item.get_tags(@xml,AuctionListItems::Common_tags)
     item.auction_id.should  == "t305862326"
     item.attrs[:free_shipping].should == false
     item.attrs[:current_price].should == 35000
@@ -82,6 +83,8 @@ ENDOFSTRING
     expect(
     item.attrs[:description].is_a?(String) &&
     item.attrs[:description].length > 10  ).to be_true
+    expect(
+    item.attrs[:item_condition]=="used" ).to be_true
   end
   
 

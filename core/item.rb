@@ -55,11 +55,42 @@ class Item
     charity_percent: ['CharityOption/Proportion',Tag_by_int],
   }
 
-  attr_accessor :auction_id,:attrs,:info_when_get
+
+  Attributes = [
+    :title,
+    :seller_id,
+    :auction_item_url,
+    :image,
+    :current_price,
+    :bids,
+    :end_time,
+    :buy_price,
+    :is_reserved,
+    :charity_percent,
+    :affiliate_rate,
+    :new_sale,
+    :store,
+    :checked,
+    :public,
+    :featured,
+    :free_hipping,
+    :item_condition,
+    :wrapping,
+    :easypayment,
+    :is_offer,
+    :is_adult,
+    :category_id,
+    :category_path,
+    # 以上までがcat,searchから持ってきた物
+
+  ]
+
+
+  attr_accessor :auction_id,:info_when_get
+  attr_reader :attrs
 
   def initialize
      @attrs = {}
-     # attrs には原則元xmlのタグをsnake_caseにしたものを使う
      @info_when_get= {} 
   end
 
@@ -76,6 +107,7 @@ class Item
 
     return true
   end
+
   def get_tags(elem,tags)
     # 1つのitemに相当する部分のxmlを渡す
     tags.each do |key,val|
@@ -99,6 +131,17 @@ class Item
     self.info_when_get[:from_self] = {}
     self.info_when_get[:from_self][:get_date] = DateTime.now  
   end
+
+  def self.make_getters
+    Attributes.each do |sym|
+      define_method(sym) do 
+        attrs[sym]
+      end
+    end
+    
+  end
+
+  make_getters
 
 
 end

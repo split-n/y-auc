@@ -27,7 +27,7 @@ describe CategoryItems do
       cate.take(100).each do |item|
         item.attrs[:store].should be_false
         item.attrs[:buy_price].should be_a_kind_of Integer
-        item.attrs[:new_item].should be_false
+        item.attrs[:item_condition].should eq "not_new"
 
       end
     end
@@ -37,7 +37,7 @@ describe CategoryItems do
       cate.take(100).each do |item|
         item.attrs[:store].should be_true
         item.attrs[:buy_price].should be_nil
-        item.attrs[:new_item].should be_true
+        item.attrs[:item_condition].should eq "new"
 
       end
     end

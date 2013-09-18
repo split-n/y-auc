@@ -29,7 +29,7 @@ class AuctionListItems < ListItems
       featured: ['FeaturedIcon',Tag_has_url],  
       free_shipping: ['FreeshippingIcon',Tag_has_url],  
       item_condition: ['NewItemIcon',proc{|elem,tag|
-	  Tag_has_url.call(elem,tag) ? new : "not_new"
+	  Tag_has_url.call(elem,tag) ? "new" : "not_new"
       } ],
       wrapping: ['WrappingIcon',Tag_has_url],
       easypayment: ['EasyPaymentIcon',Tag_has_url],

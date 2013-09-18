@@ -4,14 +4,20 @@ require 'open-uri'
 require 'nokogiri'
 require 'date'
 require_relative './yahoo_api.rb'
-require_relative './list_items.rb'
 require_relative './item.rb'
+require_relative './xml_parse_sets.rb'
+require_relative './auction_list_items.rb'
 
-class SearchItems < ListItems
+class SearchItems < AuctionListItems
   include Enumerable
 
   attr_reader :query
   
+  Search_tags = {
+      category_id: ['CategoryId',Tag_by_int],
+      category_path: ['CategoryPath',Tag_by_str],
+  }
+
   def initialize(query,opt={})
     super(opt)
     @query = query
@@ -115,11 +121,10 @@ class SearchItems < ListItems
 
   def get_item_list(url)
     items_list = {}
-    xmlfile = open(url)
-    doc = Nokogiri::XML(xmlfile)
-    doc.search('Item').each do |elem|
+    items_xml_list = get_items_xml(url)
+    items_xml_list.each do |perxml|
       item = Item.new
-      item.get_tags(elem)
+      item.get_tags(perxml,Common_tags.merge(Search_tags))
 
       item.info_when_get[:from_search] = {}
       item.info_when_get[:from_search][:query] = @query
@@ -136,6 +141,7 @@ class SearchItems < ListItems
     end
     return items_list
   end
+
 
 end
 

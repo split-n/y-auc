@@ -3,18 +3,14 @@ require_relative './yahoo_api.rb'
 
 class ListItems 
   include Enumerable
-  include YahooAPI
 
   attr_reader  :items, :options
 
   
 
-  def initialize(opt)
-    raise unless @@api_key
+  def initialize()
     @items = {}
-    @options = opt
     @read_page = 0
-    
   end
 
   def each
@@ -56,4 +52,4 @@ class ListItems
     raise NotImplementedError
   end
 
-  end
+end

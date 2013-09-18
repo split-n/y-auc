@@ -56,34 +56,6 @@ class Item
   }
 
 
-  Attributes = [
-    :title,
-    :seller_id,
-    :auction_item_url,
-    :image,
-    :current_price,
-    :bids,
-    :end_time,
-    :buy_price,
-    :is_reserved,
-    :charity_percent,
-    :affiliate_rate,
-    :new_sale,
-    :store,
-    :checked,
-    :public,
-    :featured,
-    :free_hipping,
-    :item_condition,
-    :wrapping,
-    :easypayment,
-    :is_offer,
-    :is_adult,
-    :category_id,
-    :category_path,
-    # 以上までがcat,searchから持ってきた物
-
-  ]
 
 
   attr_accessor :auction_id,:info_when_get
@@ -132,16 +104,96 @@ class Item
     self.info_when_get[:from_self][:get_date] = DateTime.now  
   end
 
-  def self.make_getters
-    Attributes.each do |sym|
-      define_method(sym) do 
-        attrs[sym]
+  def self.create_tags_reader(*arg)
+    arg.each do |symb|
+      define_method(symb) do
+        attrs[symb]
       end
     end
-    
   end
 
-  make_getters
+  # @attribute [r]
+  # @return [String] アイテムのタイトル
+  create_tags_reader :title
 
+  # @attribute [r]
+  # @return [String] アイテムの出品者のID
+  create_tags_reader :seller_id
+  
+  # @attribute [r]
+  # @return [String] アイテムのブラウザからのアクセス用URL
+  create_tags_reader :auction_item_url
+  
+  # @attribute [r]
+  # @return [Array] 画像のurlの配列が帰る
+  # すべての画像が入っているかは取得方法による
+  create_tags_reader :images
+
+  # @attribute [r]
+  # @return [Integer] 現在の金額
+  create_tags_reader :current_price
+
+  # @attribute [r]
+  # @return [Integer] 入札数
+  create_tags_reader :bids
+  
+  # @attribute [r]
+  # @return [DateTime] 終了時刻
+  create_tags_reader :end_time
+
+  # @attribute [r]
+  # @return [Integer] 即決価格
+  create_tags_reader :buy_price
+  # @attribute [r]
+  # @return [Boolean] 最低価格の有無
+  create_tags_reader :'reserved?'
+  # @attribute [r]
+  # @return [Integer] チャリティオプション寄付率
+  # ない場合は0
+  create_tags_reader :charity_percent
+  # @attribute [r]
+  # @return [アフィリエイト料率]
+  # ない場合はnil
+  create_tags_reader :affiliate_rate
+  # @attribute [r]
+  # @return [Boolean] 新登場の商品
+  create_tags_reader :'new_sale?'
+  # @attribute [r]
+  # @return [Boolean] ストア出品商品
+  create_tags_reader :'store?'
+  # @attribute [r]
+  # @return [Boolean] 鑑定済み商品
+  create_tags_reader :'checked?'
+  # @attribute [r]
+  # @return [Boolean] 官公庁オークション
+  create_tags_reader :'public?'
+  # @attribute [r]
+  # @return [Boolean] 注目のオークション
+  create_tags_reader :'featured?'
+  # @attribute [r]
+  # @return [Boolean] 送料無料
+  create_tags_reader :'free_shipping?'
+  # @attribute [r]
+  # @return [String] 商品の状態、新品の場合は"new"
+  # @todo 見直す
+  create_tags_reader :item_condition
+  # @attribute [r]
+  # @return [Boolean] 贈答品
+  create_tags_reader :'wrapping?'
+  # @attribute [r]
+  # @return [Boolean] かんたん決済対応
+  create_tags_reader :'easypayment?'
+  # @attribute [r]
+  # @return [Boolean] 値下げ交渉可能
+  create_tags_reader :'has_offer?'
+  # @attribute [r]
+  # @return [Boolean] アダルトカテゴリ商品
+  create_tags_reader :'adult?'
+  # @attribute [r]
+  # @return [Integer] カテゴリID
+  create_tags_reader :category_id
+  
+  create_tags_reader :category_path
+    # 以上までがcat,searchから持ってきた物
 
 end

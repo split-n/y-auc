@@ -13,12 +13,14 @@ class AuctionListItems < ListItems
       title: ['Title',Tag_by_str],
       seller_id: ['Seller/Id',Tag_by_str],
       auction_item_url: ['AuctionItemUrl',Tag_by_str],
-      image: ['Image',Tag_by_str],
+      images: ['Image',Proc.new {|elem,tag|
+        [Tag_by_str.call(elem,tag)]
+      }],
       current_price: ['CurrentPrice',Tag_by_int],
       bids: ['Bids',Tag_by_int],
       end_time: ['EndTime',Tag_by_datetime],
       buy_price: ['BidOrBuy',Tag_by_int],
-      is_reserved: ['IsReserved',Tag_by_bool ],
+      :'reserved?' => ['IsReserved',Tag_by_bool ],
       charity_percent: ['CharityOption/Proportion',Tag_by_int],
       affiliate_rate: ['Affiliate/Rate',Tag_by_int],
 
@@ -33,8 +35,8 @@ class AuctionListItems < ListItems
       } ],
       wrapping: ['WrappingIcon',Tag_has_url],
       easypayment: ['EasyPaymentIcon',Tag_has_url],
-      is_offer: ['IsOffer',Tag_by_bool],
-      is_adult: ['IsAdult',Tag_by_bool],
+      :'has_offer?' => ['IsOffer',Tag_by_bool],
+      :'adult?' => ['IsAdult',Tag_by_bool],
   }
 
   def initialize(opt={})

@@ -9,7 +9,7 @@ include XmlParseSets
 
 class Item
   include YahooAPI
-
+  @@available_tags = []
   Item_tags = {
     title: ['Title',Tag_by_str],
     seller_id: ['Seller/Id',Tag_by_str],
@@ -109,6 +109,7 @@ class Item
       define_method(symb) do
         attrs[symb]
       end
+      @@available_tags << symb
     end
   end
 
@@ -119,6 +120,14 @@ class Item
   # @attribute [r]
   # @return [String] アイテムの出品者のID
   create_tags_reader :seller_id
+  
+  # @attribute [r]
+  # @return [Integer] カテゴリID
+  create_tags_reader :category_id
+  
+  # @attribute [r]
+  # @return [String] カテゴリへのパス
+  create_tags_reader :category_path
   
   # @attribute [r]
   # @return [String] アイテムのブラウザからのアクセス用URL
@@ -144,56 +153,68 @@ class Item
   # @attribute [r]
   # @return [Integer] 即決価格
   create_tags_reader :buy_price
+
   # @attribute [r]
   # @return [Boolean] 最低価格の有無
   create_tags_reader :'reserved?'
+
   # @attribute [r]
   # @return [Integer] チャリティオプション寄付率
   # ない場合は0
   create_tags_reader :charity_percent
+
   # @attribute [r]
-  # @return [アフィリエイト料率]
+  # @return [Integer] アフィリエイト料率
   # ない場合はnil
   create_tags_reader :affiliate_rate
+
   # @attribute [r]
   # @return [Boolean] 新登場の商品
   create_tags_reader :'new_sale?'
+
   # @attribute [r]
   # @return [Boolean] ストア出品商品
   create_tags_reader :'store?'
+
   # @attribute [r]
   # @return [Boolean] 鑑定済み商品
   create_tags_reader :'checked?'
+
   # @attribute [r]
   # @return [Boolean] 官公庁オークション
   create_tags_reader :'public?'
+
   # @attribute [r]
   # @return [Boolean] 注目のオークション
   create_tags_reader :'featured?'
+
   # @attribute [r]
   # @return [Boolean] 送料無料
   create_tags_reader :'free_shipping?'
+
   # @attribute [r]
   # @return [String] 商品の状態、新品の場合は"new"
   # @todo 見直す
   create_tags_reader :item_condition
+
   # @attribute [r]
   # @return [Boolean] 贈答品
   create_tags_reader :'wrapping?'
+
   # @attribute [r]
   # @return [Boolean] かんたん決済対応
   create_tags_reader :'easypayment?'
+
   # @attribute [r]
   # @return [Boolean] 値下げ交渉可能
   create_tags_reader :'has_offer?'
+
   # @attribute [r]
   # @return [Boolean] アダルトカテゴリ商品
   create_tags_reader :'adult?'
-  # @attribute [r]
-  # @return [Integer] カテゴリID
-  create_tags_reader :category_id
-  
-  create_tags_reader :category_path
+
+
+
     # 以上までがcat,searchから持ってきた物
 
 end

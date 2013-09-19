@@ -25,11 +25,11 @@ class AuctionListItems < ListItems
       affiliate_rate: ['Affiliate/Rate',Tag_by_int],
 
       new_sale: ['NewIcon',Tag_has_url],
-      store: ['StoreIcon',Tag_has_url],  
+      :'store?' => ['StoreIcon',Tag_has_url],  
       checked: ['CheckIcon',Tag_has_url],  
       public: ['PublicIcon',Tag_has_url],  
       featured: ['FeaturedIcon',Tag_has_url],  
-      free_shipping: ['FreeshippingIcon',Tag_has_url],  
+      :'free_shipping?' => ['FreeshippingIcon',Tag_has_url],  
       item_condition: ['NewItemIcon',proc{|elem,tag|
 	  Tag_has_url.call(elem,tag) ? "new" : "not_new"
       } ],

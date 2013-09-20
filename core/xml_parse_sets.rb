@@ -4,7 +4,7 @@ module XmlParseSets
 
    Tag_by_str = Proc.new { |elem,target_tag|
         elem_part = elem.at(target_tag)
-        elem_part ? elem_part.inner_text : nil
+        elem_part ? elem_part.inner_text.strip : nil
     }
     
     Tag_by_int = Proc.new { |elem,target_tag|

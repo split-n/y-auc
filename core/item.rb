@@ -164,8 +164,7 @@ class Item
   create_tags_reader :charity_percent
 
   # @attribute [r]
-  # @return [Integer] アフィリエイト料率
-  # ない場合はnil
+  # @return [Integer] アフィリエイト料率 ない場合はnil
   create_tags_reader :affiliate_rate
 
   # @attribute [r]
@@ -213,8 +212,29 @@ class Item
   # @return [Boolean] アダルトカテゴリ商品
   create_tags_reader :'adult?'
 
+  # 以上までがcat,searchから持ってきた物
 
+  # @attribute [r]
+  # @return [String] 紹介文本文
+  create_tags_reader :description
+  
+  # @attribute [r]
+  # @return [String] アイテムの状態
+  create_tags_reader :item_condition
 
-    # 以上までがcat,searchから持ってきた物
+  # @attribute [r]
+  # @return [String] アイテムの状態説明文
+  create_tags_reader :item_condition_comment
 
+  # @attribute [r]
+  # @return [Boolean] 返品可能
+  create_tags_reader :item_returnable
+
+  # @attribute [r]
+  # @return [DateTime] 開始日時 
+  create_tags_reader :start_time
+
+  # @attribute [r]
+  # @return [Boolean] 入札者制限の有無
+  create_tags_reader :'has_bidder_restriction?'
 end

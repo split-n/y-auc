@@ -50,8 +50,8 @@ class Item
     charge_for_shopping: ['ChargeForShopping',Tag_by_str],
     ship_location: ['Location',Tag_by_str],
     ship_time: ['ShipTime',Tag_by_str],
-    size: ['Size',Tag_by_int],
-    weight: ['Weight',Tag_by_int],
+    ship_size: ['Size',Tag_by_int],
+    ship_weight: ['Weight',Tag_by_int],
     charity_percent: ['CharityOption/Proportion',Tag_by_int],
   }
 

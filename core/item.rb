@@ -237,4 +237,32 @@ class Item
   # @attribute [r]
   # @return [Boolean] 入札者制限の有無
   create_tags_reader :'has_bidder_restriction?'
+
+  # @attribute [r]
+  # @return [Boolean] 早期終了の有無
+  create_tags_reader :'early_closing?'
+
+  # @attribute [r]
+  # @return [Boolean] 値下げ交渉の有無
+  create_tags_reader :'can_down_offer?'
+
+  # @attribute [r]
+  # @return [String] 送料負担者
+  create_tags_reader :charge_for_shopping
+
+  # @attribute [r]
+  # @return [String] 発送地
+  create_tags_reader :ship_location
+
+  # @attribute [r]
+  # @return [Boolean] 代金先払い/後払い
+  create_tags_reader :ship_time
+
+  # @attribute [r]
+  # @return [Integer] 発送時の3辺合計サイズ
+  create_tags_reader :ship_size
+
+  # @attribute [r]
+  # @return [Boolean] 発送重量
+  create_tags_reader :ship_weight
 end

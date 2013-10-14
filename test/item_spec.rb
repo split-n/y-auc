@@ -1,30 +1,30 @@
 # encoding:utf-8
 require_relative '../core/item.rb'
 require_relative '../core/yahoo_api.rb'
-require_relative '../core/xml_parse_sets.rb'
+require_relative '../core/ya_xml.rb'
 
-include XmlParseSets
+include YaXML
 
 describe Item do
   
   before :all do 
 
-  xmlfile = File.open('./testdata/search_per_item_data.xml')
-  xml_str = xmlfile.read
-  xmlfile.close
+    xmlfile = File.open('./testdata/search_per_item_data.xml')
+    xml_str = xmlfile.read
+    xmlfile.close
 
-  @xml = Nokogiri.parse(xml_str)
+    @xml = Nokogiri.parse(xml_str)
 
-   YahooAPI.set_api_key( 
-     File.read('../key.txt',encoding: Encoding::UTF_8).chomp )
+     YahooAPI.set_api_key( 
+       File.read('../key.txt',encoding: Encoding::UTF_8).chomp )
 
   end
 
   it "searchの部分的なxmlからget_tagsが問題なくparseできているか" do
-    item = Item.new
-    require_relative '../core/auction_list_items.rb'
     require_relative '../core/search_items.rb'
-    item.get_tags(@xml,AuctionListItems::Common_tags.merge(SearchItems::Search_tags))
+    result = YaXML.get_tags(@xml,AuctionListItems::Common_tags.merge(SearchItems::Search_tags))
+
+    item = Item.new(result[0],result[1])
     item.auction_id.should  == "t305862326"
     item.title.should == "Lenovo ThinkPad L512 4444-RR1■i5-2.4/2G/250/7Pro(DtoD)#10"
     item.seller_id.should == "used_pc_shop2000"
@@ -53,14 +53,14 @@ describe Item do
   end
 
   it "内容のアップデートが出来る" do 
-    item = Item.new
-    item.get_tags(@xml,Item::Item_tags)
-    item.update!
+    result = YaXML.get_tags(@xml,Item::Item_tags)
+    item = Item.new(result[0],result[1])
+    newitem = item.get_detail
     expect(
-    item.description.is_a?(String) &&
-    item.description.length > 10  ).to be_true
+    newitem.description.is_a?(String) &&
+    newitem.description.length > 10  ).to be_true
     expect(
-    item.item_condition =="used" ).to be_true
+    newitem.item_condition =="used" ).to be_true
   end
   
 

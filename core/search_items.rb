@@ -123,10 +123,8 @@ class SearchItems < AuctionListItems
     items_list = {}
     items_xml_list = get_items_xml(url)
     items_xml_list.each do |perxml|
-      item = Item.new
       result = YaXML.get_tags(perxml,Common_tags.merge(Search_tags))
-      item.auction_id = result[0]
-      item.attrs = result[1]
+      item = Item.new(result[0],result[1])
 
       item.info_when_get[:from_search] = {}
       item.info_when_get[:from_search][:query] = @query

@@ -31,10 +31,10 @@ describe SearchItems do
 
    loop do
        next1 = en1.next
-       (next1.end_time >= tmp1).should be_true
+       expect(next1.end_time).to be >= tmp1
        tmp1 = next1.end_time
        next2 = en2.next
-       (next2.end_time >= tmp2).should be_true
+       expect(next2.end_time).to be >= tmp2
        tmp2 = next2.end_time 
     end
 

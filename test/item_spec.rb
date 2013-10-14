@@ -59,8 +59,7 @@ describe Item do
     expect(
     newitem.description.is_a?(String) &&
     newitem.description.length > 10  ).to be_true
-    expect(
-    newitem.item_condition =="used" ).to be_true
+    expect(newitem.item_condition).to eq("used")
     expect(newitem.parent).to eq(item)
   end
   

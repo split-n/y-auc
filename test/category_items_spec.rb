@@ -16,7 +16,7 @@ describe CategoryItems do
       past = 0
       cate.take(80).each do |item|
          curr = item.current_price 
-         (past <= curr).should be_true
+         expect(past).to be <= curr
          past = curr
       end
     end

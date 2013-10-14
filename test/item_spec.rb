@@ -61,6 +61,7 @@ describe Item do
     newitem.description.length > 10  ).to be_true
     expect(
     newitem.item_condition =="used" ).to be_true
+    expect(newitem.parent).to eq(item)
   end
   
 

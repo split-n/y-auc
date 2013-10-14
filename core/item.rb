@@ -59,9 +59,8 @@ class Item
   }
 
 
-  attr_accessor :info_when_get
+  attr_accessor :info_when_get,:parent
   attr_reader :attrs,:auction_id
-
   def initialize(auction_id,attributes)
      @attrs = attributes
      @auction_id = auction_id
@@ -121,6 +120,7 @@ class Item
     newitem = Item.new(result[0],result[1])
     newitem.info_when_get[:from_self] = {}
     newitem.info_when_get[:from_self][:get_date] = DateTime.now  
+    newitem.parent = self
     newitem
   end
 

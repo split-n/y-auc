@@ -55,7 +55,7 @@ describe Item do
   it "内容のアップデートが出来る" do 
     result = YaXML.get_tags(@xml,Item::Item_tags)
     item = Item.new(result[0],result[1])
-    newitem = item.get_detail
+    newitem = item.get_updated_item
     expect(
     newitem.description.is_a?(String) &&
     newitem.description.length > 10  ).to be_true

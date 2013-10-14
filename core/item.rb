@@ -59,11 +59,12 @@ class Item
   }
 
 
-  attr_accessor :auction_id,:info_when_get
-  attr_reader :attrs
+  attr_accessor :info_when_get
+  attr_reader :attrs,:auction_id
 
-  def initialize
-     @attrs = {}
+  def initialize(auction_id,attributes)
+     @attrs = attributes
+     @auction_id = auction_id
      @info_when_get= {} 
   end
 
@@ -98,15 +99,12 @@ class Item
 
 
 
-  def update!
+  def get_detail
     request_url = "http://auctions.yahooapis.jp/AuctionWebService/V2/auctionItem?appid=#{@@api_key}&auctionID=#{self.auction_id}"
     xmlstr = open(request_url)
     doc = Nokogiri.XML(xmlstr)
     result = YaXML.get_tags(doc,Item_tags)
-    self.attrs= result[1]
-     
-    self.info_when_get[:from_self] = {}
-    self.info_when_get[:from_self][:get_date] = DateTime.now  
+    result
   end
 
   def self.create_tags_reader(*arg)
@@ -116,6 +114,14 @@ class Item
       end
       @@available_tags << symb
     end
+  end
+
+  def get_updated_item
+    result = get_detail
+    newitem = Item.new(result[0],result[1])
+    newitem.info_when_get[:from_self] = {}
+    newitem.info_when_get[:from_self][:get_date] = DateTime.now  
+    newitem
   end
 
   # @attribute [r]

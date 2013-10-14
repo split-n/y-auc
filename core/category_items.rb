@@ -5,7 +5,7 @@ require 'date'
 require_relative './yahoo_api.rb'
 require_relative './auction_list_items.rb'
 require_relative './item.rb'
-require_relative './xml_parse_sets.rb'
+require_relative './ya_xml.rb'
 
 
 
@@ -115,7 +115,9 @@ class CategoryItems < AuctionListItems
     items_xml_list = get_items_xml(url)
     items_xml_list.each do |perxml|
       item = Item.new
-      item.get_tags(perxml,Common_tags.merge(Category_tags))
+      result = YaXML.get_tags(perxml,Common_tags.merge(Category_tags))
+      item.auction_id = result[0]
+      item.attrs = result[1]
 
       item.info_when_get[:from_category] = {}
       item.info_when_get[:from_category][:category_id] = @category_id

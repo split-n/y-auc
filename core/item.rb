@@ -3,13 +3,16 @@ require 'date'
 require 'nokogiri'
 require 'open-uri'
 require_relative './yahoo_api.rb'
-require_relative './xml_parse_sets.rb'
+require_relative './ya_xml.rb'
 
-include XmlParseSets
+
+include YaXML
 
 class Item
   include YahooAPI
   @@available_tags = []
+
+
   Item_tags = {
     title: ['Title',Tag_by_str],
     seller_id: ['Seller/Id',Tag_by_str],
@@ -56,8 +59,6 @@ class Item
   }
 
 
-
-
   attr_accessor :auction_id,:info_when_get
   attr_reader :attrs
 
@@ -80,26 +81,30 @@ class Item
     return true
   end
 
-  def get_tags(elem,tags)
-    # 1つのitemに相当する部分のxmlを渡す
-    tags.each do |key,val|
-      tag_name = val[0]
-      proc_ = val[1]
-      raise unless tag_name && proc_
-      content = proc_.call(elem,tag_name)
-      self.attrs[key]  = content if content != nil
+  def attrs=(arg) 
+    orig = arg
+    selected = arg.select do |key,val|
+      @@available_tags.include? key
     end
-    @auction_id = Tag_by_str.call(elem,'AuctionID')
-    self
+    if orig.length != arg.length
+      diff = orig.reject do |key,val|
+        selected[key]
+      end
+      raise diff.inspect 
+    end
+    @attrs = selected 
   end
+  
+
 
 
   def update!
     request_url = "http://auctions.yahooapis.jp/AuctionWebService/V2/auctionItem?appid=#{@@api_key}&auctionID=#{self.auction_id}"
     xmlstr = open(request_url)
     doc = Nokogiri.XML(xmlstr)
-    self.get_tags(doc,Item_tags)
-    
+    result = YaXML.get_tags(doc,Item_tags)
+    self.attrs= result[1]
+     
     self.info_when_get[:from_self] = {}
     self.info_when_get[:from_self][:get_date] = DateTime.now  
   end

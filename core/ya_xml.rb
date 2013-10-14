@@ -1,6 +1,6 @@
 # encoding:utf-8
 
-module XmlParseSets
+module YaXML
 
    Tag_by_str = Proc.new { |elem,target_tag|
         elem_part = elem.at(target_tag)
@@ -31,6 +31,20 @@ module XmlParseSets
       tag_str ? (tag_str=="true") : nil
     }
 
+    
+  def self.get_tags(elem,tags)
+    # 1つのitemに相当する部分のxmlを渡す
+    attributes = {}
+    tags.each do |key,val|
+      tag_name = val[0]
+      proc_ = val[1]
+      raise unless tag_name && proc_
+      content = proc_.call(elem,tag_name)
+      attributes[key]  = content if content != nil
+    end
+    auction_id = Tag_by_str.call(elem,'AuctionID')
+    return [auction_id,attributes]
+  end
 
 
 end

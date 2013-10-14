@@ -1,9 +1,9 @@
 # encoding:utf-8
 require_relative './yahoo_api.rb'
 require_relative './list_items.rb'
-require_relative './xml_parse_sets.rb'
+require_relative './ya_xml.rb'
 
-include XmlParseSets
+include YaXML
 class AuctionListItems < ListItems
   include YahooAPI
 

@@ -1,90 +1,66 @@
 # encoding:utf-8
 require_relative '../core/item.rb'
 require_relative '../core/yahoo_api.rb'
-require_relative '../core/xml_parse_sets.rb'
+require_relative '../core/ya_xml.rb'
 
-include XmlParseSets
+include YaXML
 
 describe Item do
   
   before :all do 
 
-    xml_str = <<'ENDOFSTRING'
-<Item>
-<AuctionID>t305862326</AuctionID>
-<Title>
-Lenovo ThinkPad L512 4444-RR1■i5-2.4/2G/250/7Pro(DtoD)#10
-</Title>
-<CategoryId>2084307191</CategoryId>
-<Seller>
-<Id>used_pc_shop2000</Id>
-<ItemListUrl>
-http://auctions.yahooapis.jp/AuctionWebService/V2/sellingList?sellerID=used_pc_shop2000
-</ItemListUrl>
-<RatingUrl>
-http://auctions.yahooapis.jp/AuctionWebService/V1/ShowRating?id=used_pc_shop2000
-</RatingUrl>
-</Seller>
-<ItemUrl>
-http://auctions.yahooapis.jp/AuctionWebService/V2/auctionItem?auctionID=t305862326
-</ItemUrl>
-<AuctionItemUrl>
-http://page15.auctions.yahoo.co.jp/jp/auction/t305862326
-</AuctionItemUrl>
-<Image width="125" height="100">
-http://auctions.c.yimg.jp/f13batchimg.auctions.yahoo.co.jp/users/7/5/4/2/used_pc_shop2000-thumb-1367478875880085.jpg
-</Image>
-<CurrentPrice>35000.00</CurrentPrice>
-<Bids>0</Bids>
-<EndTime>2013-09-05T21:43:52+09:00</EndTime>
-<IsReserved>false</IsReserved>
-<CharityOption>
-<Proportion>0</Proportion>
-</CharityOption>
-<Affiliate>
-<Rate>1</Rate>
-</Affiliate>
-<Option>
-<NewIcon>
-http://image.auctions.yahoo.co.jp/i/auctions/new3.gif
-</NewIcon>
-<StoreIcon>
-http://image.auctions.yahoo.co.jp/images/premium.gif
-</StoreIcon>
-<IsBold>false</IsBold>
-<IsBackGroundColor>false</IsBackGroundColor>
-<IsOffer>false</IsOffer>
-<IsCharity>false</IsCharity>
-</Option>
-<IsAdult>false</IsAdult>
-</Item>
-ENDOFSTRING
-  @xml = Nokogiri.parse(xml_str)
+    xmlfile = File.open('./testdata/search_per_item_data.xml')
+    xml_str = xmlfile.read
+    xmlfile.close
 
-   YahooAPI.set_api_key( 
-     File.read('../key.txt',encoding: Encoding::UTF_8).chomp )
+    @xml = Nokogiri.parse(xml_str)
+
+     YahooAPI.set_api_key( 
+       File.read('../key.txt',encoding: Encoding::UTF_8).chomp )
 
   end
 
-  it "categoryLeafの部分的なxmlからget_tagsが問題なくparseできているか" do
-    item = Item.new
-    require_relative '../core/auction_list_items.rb'
-    item.get_tags(@xml,AuctionListItems::Common_tags)
+  it "searchの部分的なxmlからget_tagsが問題なくparseできているか" do
+    require_relative '../core/search_items.rb'
+    result = YaXML.get_tags(@xml,AuctionListItems::Common_tags.merge(SearchItems::Search_tags))
+
+    item = Item.new(result[0],result[1])
     item.auction_id.should  == "t305862326"
-    item.attrs[:free_shipping].should == false
-    item.attrs[:current_price].should == 35000
+    item.title.should == "Lenovo ThinkPad L512 4444-RR1■i5-2.4/2G/250/7Pro(DtoD)#10"
+    item.seller_id.should == "used_pc_shop2000"
+    item.category_id.should == 2084307191
+    item.auction_item_url.should == "http://page15.auctions.yahoo.co.jp/jp/auction/t305862326"
+    item.images.length.should == 1
+    item.current_price.should == 35000
+    item.end_time.should  == (DateTime.parse "2013-09-05T21:43:52+09:00")
+    item.reserved?.should be_false
+    item.charity_percent.should == 0
+    item.affiliate_rate.should == 1
+    item.free_shipping?.should be_false
+    item.new_sale?.should be_true
+    item.store?.should be_true
+    item.checked?.should be_false
+    item.public?.should be_false
+    item.featured?.should be_false
+    item.free_shipping?.should be_false
+    item.item_condition.should == "not_new"
+    item.wrapping?.should be_false
+    item.easypayment?.should be_false
+    item.has_offer?.should be_false
+    item.adult?.should be_false
+
      
   end
 
   it "内容のアップデートが出来る" do 
-    item = Item.new
-    item.get_tags(@xml,Item::Item_tags)
-    item.update!
+    result = YaXML.get_tags(@xml,Item::Item_tags)
+    item = Item.new(result[0],result[1])
+    newitem = item.get_updated_item
     expect(
-    item.attrs[:description].is_a?(String) &&
-    item.attrs[:description].length > 10  ).to be_true
+    newitem.description.is_a?(String) &&
+    newitem.description.length > 10  ).to be_true
     expect(
-    item.attrs[:item_condition]=="used" ).to be_true
+    newitem.item_condition =="used" ).to be_true
   end
   
 

@@ -3,12 +3,15 @@ require 'date'
 require 'nokogiri'
 require 'open-uri'
 require_relative './yahoo_api.rb'
-require_relative './xml_parse_sets.rb'
+require_relative './ya_xml.rb'
 
-include XmlParseSets
+
+include YaXML
 
 class Item
   include YahooAPI
+  @@available_tags = []
+
 
   Item_tags = {
     title: ['Title',Tag_by_str],
@@ -38,59 +41,30 @@ class Item
     end_time: ['EndTime',Tag_by_datetime],
     buy_price: ['BidOrBuy',Tag_by_int],
 
-    is_reserved: ['Reserved',Tag_by_int],
-    bidder_restriction: ['IsBidderRestrictions',Tag_by_bool],
-    early_closing: ['IsEarlyClosing',Tag_by_bool],
-    down_offer: ['IsOffer',Tag_by_bool],
-    store: ['StoreIcon',Tag_has_url],  
-    checked: ['CheckIcon',Tag_has_url],  
-    featured: ['FeaturedIcon',Tag_has_url],  
-    free_shipping: ['FreeshippingIcon',Tag_has_url],  
-    easypayment: ['EasyPaymentIcon',Tag_has_url],
+    :'reserved?' => ['Reserved',Tag_by_int],
+    :'has_bidder_restriction?' => ['IsBidderRestrictions',Tag_by_bool],
+    :'early_closing?' => ['IsEarlyClosing',Tag_by_bool],
+    :'can_down_offer?' => ['IsOffer',Tag_by_bool],
+    :'store?' =>  ['StoreIcon',Tag_has_url],  
+    :'checked?' => ['CheckIcon',Tag_has_url],  
+    :'featured?' => ['FeaturedIcon',Tag_has_url],  
+    :'free_shipping?' => ['FreeshippingIcon',Tag_has_url],  
+    :'easypayment?' => ['EasyPaymentIcon',Tag_has_url],
     charge_for_shopping: ['ChargeForShopping',Tag_by_str],
     ship_location: ['Location',Tag_by_str],
     ship_time: ['ShipTime',Tag_by_str],
-    size: ['Size',Tag_by_int],
-    weight: ['Weight',Tag_by_int],
+    ship_size: ['Size',Tag_by_int],
+    ship_weight: ['Weight',Tag_by_int],
     charity_percent: ['CharityOption/Proportion',Tag_by_int],
   }
 
 
-  Attributes = [
-    :title,
-    :seller_id,
-    :auction_item_url,
-    :image,
-    :current_price,
-    :bids,
-    :end_time,
-    :buy_price,
-    :is_reserved,
-    :charity_percent,
-    :affiliate_rate,
-    :new_sale,
-    :store,
-    :checked,
-    :public,
-    :featured,
-    :free_hipping,
-    :item_condition,
-    :wrapping,
-    :easypayment,
-    :is_offer,
-    :is_adult,
-    :category_id,
-    :category_path,
-    # 以上までがcat,searchから持ってきた物
+  attr_accessor :info_when_get
+  attr_reader :attrs,:auction_id
 
-  ]
-
-
-  attr_accessor :auction_id,:info_when_get
-  attr_reader :attrs
-
-  def initialize
-     @attrs = {}
+  def initialize(auction_id,attributes)
+     @attrs = attributes
+     @auction_id = auction_id
      @info_when_get= {} 
   end
 
@@ -108,40 +82,198 @@ class Item
     return true
   end
 
-  def get_tags(elem,tags)
-    # 1つのitemに相当する部分のxmlを渡す
-    tags.each do |key,val|
-      tag_name = val[0]
-      proc_ = val[1]
-      raise unless tag_name && proc_
-      content = proc_.call(elem,tag_name)
-      self.attrs[key]  = content if content != nil
+  def attrs=(arg) 
+    orig = arg
+    selected = arg.select do |key,val|
+      @@available_tags.include? key
     end
-    @auction_id = Tag_by_str.call(elem,'AuctionID')
-    self
+    if orig.length != arg.length
+      diff = orig.reject do |key,val|
+        selected[key]
+      end
+      raise diff.inspect 
+    end
+    @attrs = selected 
   end
+  
 
 
-  def update!
+
+  def get_detail
     request_url = "http://auctions.yahooapis.jp/AuctionWebService/V2/auctionItem?appid=#{@@api_key}&auctionID=#{self.auction_id}"
     xmlstr = open(request_url)
     doc = Nokogiri.XML(xmlstr)
-    self.get_tags(doc,Item_tags)
-    
-    self.info_when_get[:from_self] = {}
-    self.info_when_get[:from_self][:get_date] = DateTime.now  
+    result = YaXML.get_tags(doc,Item_tags)
+    result
   end
 
-  def self.make_getters
-    Attributes.each do |sym|
-      define_method(sym) do 
-        attrs[sym]
+  def self.create_tags_reader(*arg)
+    arg.each do |symb|
+      define_method(symb) do
+        attrs[symb]
       end
+      @@available_tags << symb
     end
-    
   end
 
-  make_getters
+  def get_updated_item
+    result = get_detail
+    newitem = Item.new(result[0],result[1])
+    newitem.info_when_get[:from_self] = {}
+    newitem.info_when_get[:from_self][:get_date] = DateTime.now  
+    newitem
+  end
 
+  # @attribute [r]
+  # @return [String] アイテムのタイトル
+  create_tags_reader :title
 
+  # @attribute [r]
+  # @return [String] アイテムの出品者のID
+  create_tags_reader :seller_id
+  
+  # @attribute [r]
+  # @return [Integer] カテゴリID
+  create_tags_reader :category_id
+  
+  # @attribute [r]
+  # @return [String] カテゴリへのパス
+  create_tags_reader :category_path
+  
+  # @attribute [r]
+  # @return [String] アイテムのブラウザからのアクセス用URL
+  create_tags_reader :auction_item_url
+  
+  # @attribute [r]
+  # @return [Array] 画像のurlの配列が帰る
+  # すべての画像が入っているかは取得方法による
+  create_tags_reader :images
+
+  # @attribute [r]
+  # @return [Integer] 現在の金額
+  create_tags_reader :current_price
+
+  # @attribute [r]
+  # @return [Integer] 入札数
+  create_tags_reader :bids
+  
+  # @attribute [r]
+  # @return [DateTime] 終了時刻
+  create_tags_reader :end_time
+
+  # @attribute [r]
+  # @return [Integer] 即決価格
+  create_tags_reader :buy_price
+
+  # @attribute [r]
+  # @return [Boolean] 最低価格の有無
+  create_tags_reader :'reserved?'
+
+  # @attribute [r]
+  # @return [Integer] チャリティオプション寄付率
+  # ない場合は0
+  create_tags_reader :charity_percent
+
+  # @attribute [r]
+  # @return [Integer] アフィリエイト料率 ない場合はnil
+  create_tags_reader :affiliate_rate
+
+  # @attribute [r]
+  # @return [Boolean] 新登場の商品
+  create_tags_reader :'new_sale?'
+
+  # @attribute [r]
+  # @return [Boolean] ストア出品商品
+  create_tags_reader :'store?'
+
+  # @attribute [r]
+  # @return [Boolean] 鑑定済み商品
+  create_tags_reader :'checked?'
+
+  # @attribute [r]
+  # @return [Boolean] 官公庁オークション
+  create_tags_reader :'public?'
+
+  # @attribute [r]
+  # @return [Boolean] 注目のオークション
+  create_tags_reader :'featured?'
+
+  # @attribute [r]
+  # @return [Boolean] 送料無料
+  create_tags_reader :'free_shipping?'
+
+  # @attribute [r]
+  # @return [String] 商品の状態、新品の場合は"new"
+  # @todo 見直す
+  create_tags_reader :item_condition
+
+  # @attribute [r]
+  # @return [Boolean] 贈答品
+  create_tags_reader :'wrapping?'
+
+  # @attribute [r]
+  # @return [Boolean] かんたん決済対応
+  create_tags_reader :'easypayment?'
+
+  # @attribute [r]
+  # @return [Boolean] 値下げ交渉可能
+  create_tags_reader :'has_offer?'
+
+  # @attribute [r]
+  # @return [Boolean] アダルトカテゴリ商品
+  create_tags_reader :'adult?'
+
+  # 以上までがcat,searchから持ってきた物
+
+  # @attribute [r]
+  # @return [String] 紹介文本文
+  create_tags_reader :description
+  
+  # @attribute [r]
+  # @return [String] アイテムの状態
+  create_tags_reader :item_condition
+
+  # @attribute [r]
+  # @return [String] アイテムの状態説明文
+  create_tags_reader :item_condition_comment
+
+  # @attribute [r]
+  # @return [Boolean] 返品可能
+  create_tags_reader :item_returnable
+
+  # @attribute [r]
+  # @return [DateTime] 開始日時 
+  create_tags_reader :start_time
+
+  # @attribute [r]
+  # @return [Boolean] 入札者制限の有無
+  create_tags_reader :'has_bidder_restriction?'
+
+  # @attribute [r]
+  # @return [Boolean] 早期終了の有無
+  create_tags_reader :'early_closing?'
+
+  # @attribute [r]
+  # @return [Boolean] 値下げ交渉の有無
+  create_tags_reader :'can_down_offer?'
+
+  # @attribute [r]
+  # @return [String] 送料負担者
+  create_tags_reader :charge_for_shopping
+
+  # @attribute [r]
+  # @return [String] 発送地
+  create_tags_reader :ship_location
+
+  # @attribute [r]
+  # @return [Boolean] 代金先払い/後払い
+  create_tags_reader :ship_time
+
+  # @attribute [r]
+  # @return [Integer] 発送時の3辺合計サイズ
+  create_tags_reader :ship_size
+
+  # @attribute [r]
+  # @return [Boolean] 発送重量
+  create_tags_reader :ship_weight
 end

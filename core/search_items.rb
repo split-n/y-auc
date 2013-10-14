@@ -5,7 +5,7 @@ require 'nokogiri'
 require 'date'
 require_relative './yahoo_api.rb'
 require_relative './item.rb'
-require_relative './xml_parse_sets.rb'
+require_relative './ya_xml.rb'
 require_relative './auction_list_items.rb'
 
 class SearchItems < AuctionListItems
@@ -123,14 +123,13 @@ class SearchItems < AuctionListItems
     items_list = {}
     items_xml_list = get_items_xml(url)
     items_xml_list.each do |perxml|
-      item = Item.new
-      item.get_tags(perxml,Common_tags.merge(Search_tags))
+      result = YaXML.get_tags(perxml,Common_tags.merge(Search_tags))
+      item = Item.new(result[0],result[1])
 
       item.info_when_get[:from_search] = {}
       item.info_when_get[:from_search][:query] = @query
       item.info_when_get[:from_search][:get_date] = DateTime.now
 
-      #pp item
 
       if item.valid?
         items_list[item.auction_id] = item

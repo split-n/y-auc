@@ -14,7 +14,7 @@ describe SearchItems do
     matcher = Regexp.new(query, Regexp::IGNORECASE)
     search.lazy.take(150).each do |item|
       expect(
-      item.attrs[:title].tr('ａ-ｚ','a-z').tr('Ａ-Ｚ','A-Z').tr('０-９','0-9')
+      item.title.tr('ａ-ｚ','a-z').tr('Ａ-Ｚ','A-Z').tr('０-９','0-9')
       ).to match matcher
 
     end
@@ -31,11 +31,11 @@ describe SearchItems do
 
    loop do
        next1 = en1.next
-       (next1.attrs[:end_time] >= tmp1).should be_true
-       tmp1 = next1.attrs[:end_time] 
+       (next1.end_time >= tmp1).should be_true
+       tmp1 = next1.end_time
        next2 = en2.next
-       (next2.attrs[:end_time] >= tmp2).should be_true
-       tmp2 = next2.attrs[:end_time] 
+       (next2.end_time >= tmp2).should be_true
+       tmp2 = next2.end_time 
     end
 
      
